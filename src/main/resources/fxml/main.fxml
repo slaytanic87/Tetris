@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.canvas.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="760.0" prefWidth="655.0" style="-fx-background-color: #79798c;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.tetris.controller.gui.MainController">
+   <children>
+      <AnchorPane fx:id="canvasPane" layoutX="5.0" layoutY="8.0" prefHeight="746.0" prefWidth="375.0" style="-fx-background-color: #000000;">
+         <children>
+            <Canvas fx:id="gameView" height="746.0" width="375.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="388.0" layoutY="275.0" prefHeight="279.0" prefWidth="260.0" style="-fx-background-color: #000000;">
+         <children>
+            <Canvas fx:id="blockView" height="279.0" width="260.0" />
+         </children>
+      </AnchorPane>
+      <ImageView fitHeight="260.0" fitWidth="260.0" layoutX="388.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/cathedral.jpg" />
+         </image>
+      </ImageView>
+      <Pane layoutX="388.0" layoutY="182.0" prefHeight="87.0" prefWidth="260.0" style="-fx-background-color: #000000;">
+         <children>
+            <Canvas fx:id="scoreView" height="93.0" layoutY="-2.0" width="260.0" />
+         </children>
+      </Pane>
+      <ImageView fitHeight="231.0" fitWidth="260.0" layoutX="388.0" layoutY="560.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/tetris.jpg" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

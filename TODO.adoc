@@ -1,0 +1,84 @@
+= Todo Tetris
+
+== Version 0.1
+
+=== Block-Rotierung am rechten Rand
+
+Wenn Block dicht am rechten Rand befindet, ist momentan keine Rotierung möglich,
+wegen Array out of bound.
+
+* DONE
+
+=== Anzeige für Böcke in der Queue
+
+Visualisierung der Blöcke in der Queue
+
+* DONE
+
+=== Punkte Anzeige
+
+Punktesystem implementieren bzw. Visualisieren
+
+* IN PROGRESS
+
+=== Vollbesetzte Zeile/en entfernen
+
+Wenn eine Zeile besetzt voll besetzt ist, dann soll dieser entfernt werden.
+
+* DONE
+
+=== Blockfallgeschwindigkeit
+
+Schwierigkeitsgrad soll sich erhöhen nach Level.
+
+* IN TESTING
+
+=== Block fallen lassen
+
+Wenn Pfeiltaste nach unten gedrückt wird, dann soll der Block nach unten fallen.
+
+* DONE
+
+=== Blocküberlauf
+
+Wenn Blöcke überläuft, dann musst das Spiel beendet werden
+
+* IN TESTING
+
+=== Block Zentrieren
+
+Blöcke müssen im initialen Position in relation zu sich selbst, im Feld zentriert werden.
+
+* DONE
+
+=== Spielpausieren
+
+Wenn das Spiel pausiert wird, dann musst eine animierte Aufschrift "Pause" erscheinen.
+
+* DONE
+
+=== Spielzustand
+
+Es musst eine Möglichkeit angeboten werden, den aktuellen Spielzustand zu merken, damit die Startfunktion unterscheiden kann, wann die Daten zurückgesetzt werden kann.
+
+* DONE
+
+== Bugs
+
+Einige generierte Block haben zu dunklen Kontrast.
+
+* DONE
+
+== Version 0.5
+
+=== Tile Animation
+
+Animation der Tiles mit AnimationTimer.
+
+* TODO
+
+=== Lokale Socket/Vertx Eventbus Verbindung
+
+Lokale Bus Verbindung implementieren, um später unterschiedliche Steuerungsmöglichkeiten zu ermöglichen.
+
+* TODO
