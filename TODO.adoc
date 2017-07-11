@@ -75,7 +75,7 @@ Einige generierte Block haben zu dunklen Kontrast.
 
 Animation der Tiles mit AnimationTimer.
 
-* TODO
+* DONE
 
 === Lokale Socket/Vertx Eventbus Verbindung
 

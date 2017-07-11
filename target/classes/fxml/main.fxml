@@ -20,11 +20,6 @@
             <Canvas fx:id="blockView" height="279.0" width="260.0" />
          </children>
       </AnchorPane>
-      <ImageView fitHeight="260.0" fitWidth="260.0" layoutX="388.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@images/cathedral.jpg" />
-         </image>
-      </ImageView>
       <Pane layoutX="388.0" layoutY="182.0" prefHeight="87.0" prefWidth="260.0" style="-fx-background-color: #000000;">
          <children>
             <Canvas fx:id="scoreView" height="93.0" layoutY="-2.0" width="260.0" />
@@ -35,5 +30,10 @@
             <Image url="@images/tetris.jpg" />
          </image>
       </ImageView>
+      <Pane layoutX="388.0" layoutY="8.0" prefHeight="169.0" prefWidth="260.0">
+         <children>
+            <Canvas fx:id="canvasCathedral" height="169.0" width="260.0" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

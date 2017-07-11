@@ -1,7 +1,8 @@
 package de.tetris.controller.gui;
 
 import de.tetris.controller.game.Scores;
-import de.tetris.controller.gui.animation.UiAnimation;
+import de.tetris.controller.gui.animation.CathedralAnimation;
+import de.tetris.controller.gui.animation.UiMenuAnimation;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -36,22 +37,29 @@ public class MainController implements Initializable {
     private Canvas scoreView;
 
     @FXML
+    private Canvas canvasCathedral;
+
+    @FXML
     private AnchorPane canvasPane;
 
     private GraphicsContext graphicsContext;
     private GraphicsContext blockQueueViewContext;
     private GraphicsContext scoreViewContext;
 
-    private UiAnimation animation;
+    private UiMenuAnimation animation;
+    private CathedralAnimation cathedralAnimation;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         graphicsContext = gameView.getGraphicsContext2D();
         blockQueueViewContext = blockView.getGraphicsContext2D();
         scoreViewContext = scoreView.getGraphicsContext2D();
-        animation = new UiAnimation();
+
+        animation = new UiMenuAnimation();
         animation.createMenuStart(graphicsContext, gameView.getWidth(), gameView.getHeight());
         animation.createPauseAnimation(graphicsContext, gameView.getWidth(), gameView.getHeight());
+        cathedralAnimation = new CathedralAnimation(canvasCathedral);
+        cathedralAnimation.start();
         startButtonAnimationOn();
     }
 

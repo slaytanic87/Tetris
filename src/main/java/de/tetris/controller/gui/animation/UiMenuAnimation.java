@@ -12,7 +12,7 @@ import javafx.util.Duration;
 /**
  * @author Lam
  */
-public class UiAnimation {
+public class UiMenuAnimation {
 
     private Timeline pauseAnimation;
     private Timeline menuStartAnimation;
@@ -53,14 +53,14 @@ public class UiAnimation {
                     graphicsContext.setFill(Color.YELLOWGREEN);
                     graphicsContext.setFont(Font.getDefault());
                     graphicsContext.fillText(pauseStr,
-                            (scopeWidth / 2) - 2 * MainController.BLOCK_WIDTH, scopeHeight / 2);
+                            (scopeWidth / 2) - 2.5 * MainController.BLOCK_WIDTH, scopeHeight / 2);
                 }, new KeyValue[0]) // don't use binding
         );
         pauseAnimation.getKeyFrames().add(
                 new KeyFrame(Duration.millis(400), actionEvent -> {
                     graphicsContext.setFill(Color.GREEN);
                     graphicsContext.fillText(pauseStr,
-                            (scopeWidth / 2) - 2 * MainController.BLOCK_WIDTH, scopeHeight / 2);
+                            (scopeWidth / 2) - 2.5 * MainController.BLOCK_WIDTH, scopeHeight / 2);
                 }, new KeyValue[0]) // don't use binding
         );
     }
