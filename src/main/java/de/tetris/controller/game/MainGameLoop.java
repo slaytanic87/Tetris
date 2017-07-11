@@ -204,8 +204,10 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
 
     public Block generateBlock() {
         final double COLORCONST = 0.28;
+        final int RANDOM_NUMBER_OF_BLOCKS = 6;
+
         Random random = new Random();
-        int randNumber = random.nextInt(6) + 1;
+        int randNumber = random.nextInt(RANDOM_NUMBER_OF_BLOCKS) + 1;
 
         double r = Math.random();
         double g = Math.random();
@@ -320,6 +322,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
             initGame();
             GlobalController.getMainController().startButtonAnimationOff();
             GlobalController.getMainController().pauseAnimationOff();
+            // start main gameloop
             super.start();
         }
         log.debug("Game started!");
