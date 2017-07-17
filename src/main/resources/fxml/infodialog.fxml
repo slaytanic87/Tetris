@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="291.0" prefWidth="508.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.tetris.controller.gui.InfodialogController">
+   <top>
+      <Pane prefHeight="133.0" prefWidth="508.0" style="-fx-background-color: #E2E2E2;" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="90.0" fitWidth="103.0" layoutX="402.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/info_icon.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="110.0" layoutY="15.0" prefHeight="105.0" prefWidth="261.0" text="Tetris Fx">
+               <font>
+                  <Font name="Arial Rounded MT Bold" size="56.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+   </top>
+   <center>
+      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="21.0" layoutY="14.0" text="Tetris Fx 0.5">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+            </Label>
+            <Button layoutX="419.0" layoutY="107.0" mnemonicParsing="false" onAction="#closeDialog" style="-fx-background-color: #000000;" text="Close" textFill="#f2efef" />
+            <Label layoutX="21.0" layoutY="126.0" text="© 2017 Lam" />
+            <Label layoutX="21.0" layoutY="41.0" text="This is a free to distribute Software" />
+            <Label layoutX="21.0" layoutY="69.0" text="I do not own the license for the images">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="21.0" layoutY="86.0" text="all rights and contributions go to the designer of the images.">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+   </center>
+</BorderPane>

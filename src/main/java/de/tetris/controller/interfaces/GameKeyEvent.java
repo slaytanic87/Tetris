@@ -1,5 +1,6 @@
 package de.tetris.controller.interfaces;
 
+import de.tetris.controller.gui.GlobalController;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,9 @@ public class GameKeyEvent implements EventHandler<KeyEvent> {
                     break;
                 case SPACE:
                     controller.startGame();
+                    break;
+                case A:
+                    GlobalController.loadInfoDialogController();
                     break;
                 default:
                     break;

@@ -21,6 +21,8 @@ public class UiMenuAnimation {
         menuStartAnimation = new Timeline();
         menuStartAnimation.setCycleCount(Timeline.INDEFINITE);
         final String controlsStr = "CTRL ALT ← ↓ →";
+        final String inStr = "A: About";
+        // TODO Richtige mathematische Breiten-/Höhenrechnung
         final double instrX = (scopeWidth / 2) - (3 * MainController.BLOCK_WIDTH);
         final double instrY = (scopeHeight / 2) + (2 * MainController.BLOCK_HEIGHT);
 
@@ -32,6 +34,10 @@ public class UiMenuAnimation {
                             scopeHeight / 2);
                     graphicsContext.setFont(new Font(18));
                     graphicsContext.fillText(controlsStr, instrX, instrY);
+                    // TODO Richtige mathematische Breiten-/Höhenrechnung
+                    graphicsContext.fillText(inStr, (scopeWidth / 2) - MainController.BLOCK_WIDTH
+                                    - (MainController.BLOCK_WIDTH / 2),
+                            instrY + (2 * MainController.BLOCK_HEIGHT));
                 }, new KeyValue[0]) // don't use binding
         );
         menuStartAnimation.getKeyFrames().add(
@@ -39,6 +45,10 @@ public class UiMenuAnimation {
                     graphicsContext.clearRect(0, 0, scopeWidth, scopeHeight);
                     graphicsContext.setFont(new Font(18));
                     graphicsContext.fillText(controlsStr, instrX, instrY);
+                    // TODO Richtige mathematische Breiten-/Höhenrechnung
+                    graphicsContext.fillText(inStr, (scopeWidth / 2) - MainController.BLOCK_WIDTH
+                                    - (MainController.BLOCK_WIDTH / 2),
+                            instrY + (2 * MainController.BLOCK_HEIGHT));
                 }, new KeyValue[0]) // don't use binding);
         );
     }

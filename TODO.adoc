@@ -79,6 +79,12 @@ Animation der Tiles mit AnimationTimer.
 
 === Lokale Socket/Vertx Eventbus Verbindung
 
-Lokale Bus Verbindung implementieren, um später unterschiedliche Steuerungsmöglichkeiten zu ermöglichen.
+Lokale Eventbus Verbindung implementieren, um später unterschiedliche Steuerungsmöglichkeiten zu ermöglichen.
 
 * TODO
+
+=== Info Window
+
+Info & Copyright Fenster erstellen
+
+* IN PROGRESS
