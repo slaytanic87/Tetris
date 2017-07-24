@@ -19,7 +19,7 @@ Visualisierung der Blöcke in der Queue
 
 Punktesystem implementieren bzw. Visualisieren
 
-* IN PROGRESS
+* DONE
 
 === Vollbesetzte Zeile/en entfernen
 
@@ -85,6 +85,6 @@ Lokale Eventbus Verbindung implementieren, um später unterschiedliche Steuerung
 
 === Info Window
 
-Info & Copyright Fenster erstellen
+Info & Copyright etc. Fenster erstellen
 
 * IN PROGRESS

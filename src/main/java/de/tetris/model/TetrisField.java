@@ -23,8 +23,8 @@ public class TetrisField {
     private List<List<Cell>> field = null;
 
     public TetrisField(int cols, int rows) {
-        this.COLS = cols;
-        this.ROWS = rows;
+        COLS = cols;
+        ROWS = rows;
         log.debug("Cols: {} Rows: {}", cols, rows);
         resetModel();
     }
@@ -32,16 +32,16 @@ public class TetrisField {
     public void resetModel() {
         field = new ArrayList<List<Cell>>(ROWS);
         for (int i = 0; i < ROWS; i++) {
-            addRow();
+            addEmptyRow();
         }
     }
 
     public int getCols() {
-        return this.COLS;
+        return COLS;
     }
 
     public int getRows() {
-        return this.ROWS;
+        return ROWS;
     }
 
     public long calcSpeed() {
@@ -50,7 +50,7 @@ public class TetrisField {
         return (newSpeed < 0) ? 0 : newSpeed;
     }
 
-    public void addRow() {
+    public void addEmptyRow() {
         ArrayList<Cell> row = new ArrayList<>(COLS);
         for (int i = 0; i < COLS; i++) {
             row.add(i, new Cell());
@@ -98,7 +98,7 @@ public class TetrisField {
 
 
     /**
-     * Copy block model into tetris field model.
+     * Copy block grid data into tetris field grid data.
      * @param block {@link Block}
      */
     public void placeBlock(Block block) {
@@ -122,6 +122,11 @@ public class TetrisField {
         log.debug("block placed to field model");
     }
 
+    /**
+     * Detect wether a row is complete filled.
+     * @param rowPos index position of a row
+     * @return is filled?
+     */
     public boolean isRowFilled(int rowPos) {
         boolean isRowFilled;
         if (rowPos < field.size()) {
@@ -142,7 +147,7 @@ public class TetrisField {
             boolean isfilled = isRowFilled(row);
             if (isfilled) {
                 removeRow(row);
-                addRow();
+                addEmptyRow();
                 processedRows++;
                 log.debug("Removed row: {}", row);
             }

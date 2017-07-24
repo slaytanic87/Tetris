@@ -37,7 +37,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     private long lastTime;
 
     private boolean isButtonHit = false; // for smoother block animation
-    private GameState gameState = new GameState();
+    private GameState gameState = GameState.getInstance();
 
     public MainGameLoop(TetrisField scope) {
         queue = new LinkedBlockingQueue<>();
@@ -95,8 +95,9 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
             case BLOCK_OVERFLOW:
                 stopGame();
                 break;
-            default: {
-            }
+            case NONE:
+                break;
+            default: log.debug("Nothing to do with this collisiontype {}", collisionType);
         }
     }
 
@@ -318,6 +319,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     @Override
     public void startGame() {
         if (gameState.isFinished()) {
+            gameState.setIsNotStopped();
             gameState.setIsNotFinished();
             initGame();
             GlobalController.getMainController().startButtonAnimationOff();
@@ -330,6 +332,10 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
 
     @Override
     public void stopGame() {
+        if (gameState.isStopped()) {
+            return;
+        }
+        gameState.setIsStopped();
         gameState.setIsFinished();
         GlobalController.getMainController().clearGameFieldCanvas();
         GlobalController.getMainController().startButtonAnimationOn();

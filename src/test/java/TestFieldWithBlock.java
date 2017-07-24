@@ -31,7 +31,7 @@ public class TestFieldWithBlock {
                     .color(Color.RED).build());
         }
 
-        int middle = DEFAULT_COLS / 3;
+        int middle = DEFAULT_COLS / 2;
         Block block = new Lblock(Color.MAGENTA);
         scope.placeBlock(block);
         log.info(scope.toString());
@@ -50,4 +50,52 @@ public class TestFieldWithBlock {
         assertEquals(CollisionType.GROUND_BELOW, ctype);
     }
 
+    @Test
+    public void shouldDetectFullFilledRows() {
+        scope = new TetrisField(DEFAULT_COLS, DEFAULT_ROWS);
+        for (int row = 1; row < 4; row++) {
+            for (int col = 0; col < DEFAULT_COLS; col++) {
+                Cell cell = new Cell();
+                cell.setFilled(true);
+                scope.setCell(row, col, cell);
+            }
+        }
+        boolean isFilled = scope.isRowFilled(1);
+        assertEquals(true, isFilled);
+        isFilled = scope.isRowFilled(2);
+        assertEquals(true, isFilled);
+        isFilled = scope.isRowFilled(3);
+        assertEquals(true, isFilled);
+        isFilled = scope.isRowFilled(4);
+        assertEquals(false, isFilled);
+    }
+
+    @Test
+    public void shouldProcessFilledRows() {
+        scope = new TetrisField(DEFAULT_COLS, DEFAULT_ROWS);
+        for (int row = 1; row < 5; row++) {
+            for (int col = 0; col < DEFAULT_COLS; col++) {
+                Cell cell = new Cell();
+                cell.setFilled(true);
+                scope.setCell(row, col, cell);
+            }
+        }
+        boolean isFilled = scope.isRowFilled(1);
+        assertEquals(true, isFilled);
+        isFilled = scope.isRowFilled(2);
+        assertEquals(true, isFilled);
+        isFilled = scope.isRowFilled(3);
+        assertEquals(true, isFilled);
+        isFilled = scope.isRowFilled(4);
+        assertEquals(true, isFilled);
+        scope.processFilledRows();
+        isFilled = scope.isRowFilled(1);
+        assertEquals(false, isFilled);
+        isFilled = scope.isRowFilled(2);
+        assertEquals(false, isFilled);
+        isFilled = scope.isRowFilled(3);
+        assertEquals(false, isFilled);
+        isFilled = scope.isRowFilled(4);
+        assertEquals(false, isFilled);
+    }
 }

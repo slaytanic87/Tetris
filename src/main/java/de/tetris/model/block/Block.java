@@ -27,7 +27,7 @@ public abstract class Block implements Cloneable {
         this.color = color;
     }
 
-    protected int[][] transponeRight(int[][] data) {
+    protected int[][] tiltRight(int[][] data) {
         int cols = data.length;
         int rows = data[0].length;
         int[][] newdata = new int[rows][cols];
@@ -41,7 +41,7 @@ public abstract class Block implements Cloneable {
         return newdata;
     }
 
-    protected int[][] transponeLeft(int[][] data) {
+    protected int[][] tiltLeft(int[][] data) {
         int cols = data.length;
         int rows = data[0].length;
         int[][] newdata = new int[rows][cols];

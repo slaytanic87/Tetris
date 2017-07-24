@@ -8,11 +8,21 @@ import lombok.Getter;
 @Getter
 public class GameState {
 
+    public static GameState INSTANCE = null;
+
     private boolean isDebug = false;
     private boolean isPaused = false;
     private boolean isFinished = true;
+    private boolean isStopped = true;
 
-    public GameState() {
+    private GameState() {
+    }
+
+    public static GameState getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new GameState();
+        }
+        return INSTANCE;
     }
 
     public void setIsFinished() {
@@ -29,6 +39,14 @@ public class GameState {
 
     public void setIsNotPaused() {
         this.isPaused = false;
+    }
+
+    public void setIsStopped() {
+        this.isStopped = true;
+    }
+
+    public void setIsNotStopped() {
+        this.isStopped = false;
     }
 
     public void debugOn() {

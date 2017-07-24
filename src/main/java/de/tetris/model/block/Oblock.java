@@ -83,7 +83,7 @@ public class Oblock extends Block {
 
     @Override
     public String toString() {
-        String str = "";
+        String str = "\n";
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[0].length; j++) {
                 str += data[i][j] + "|";

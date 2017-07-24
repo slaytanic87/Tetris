@@ -28,16 +28,16 @@ public class UiMenuAnimation {
 
         menuStartAnimation.getKeyFrames().add(
                 new KeyFrame(Duration.millis(400), actionEvent -> {
-                    graphicsContext.setFill(Color.BLUE);
+                    graphicsContext.setFill(Color.GREEN);
                     graphicsContext.setFont(new Font(14));
                     graphicsContext.fillText("- Press Space -", (scopeWidth / 2) - 2 * MainController.BLOCK_WIDTH,
                             scopeHeight / 2);
+                    graphicsContext.setFill(Color.BLUE);
                     graphicsContext.setFont(new Font(18));
                     graphicsContext.fillText(controlsStr, instrX, instrY);
                     // TODO Richtige mathematische Breiten-/Höhenrechnung
                     graphicsContext.fillText(inStr, (scopeWidth / 2) - MainController.BLOCK_WIDTH
-                                    - (MainController.BLOCK_WIDTH / 2),
-                            instrY + (2 * MainController.BLOCK_HEIGHT));
+                                    - (MainController.BLOCK_WIDTH / 2), instrY + (2 * MainController.BLOCK_HEIGHT));
                 }, new KeyValue[0]) // don't use binding
         );
         menuStartAnimation.getKeyFrames().add(

@@ -32,21 +32,21 @@ public class Jblock extends Block {
     }
 
     public void rotateLeft() {
-        data = super.transponeLeft(data);
+        data = super.tiltLeft(data);
     }
 
     public void rotateRight() {
-        data = super.transponeRight(data);
+        data = super.tiltRight(data);
     }
 
     @Override
     public boolean isRotateLeftAllowed(List<List<Cell>> field) {
-        return super.isNotOverlap(super.transponeLeft(data), field, getGridposition());
+        return super.isNotOverlap(super.tiltLeft(data), field, getGridposition());
     }
 
     @Override
     public boolean isRotateRightAllowed(List<List<Cell>> field) {
-        return super.isNotOverlap(super.transponeRight(data), field, getGridposition());
+        return super.isNotOverlap(super.tiltRight(data), field, getGridposition());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class Jblock extends Block {
 
     @Override
     public String toString() {
-        String str = "";
+        String str = "\n";
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[0].length; j++) {
                 str += data[i][j] + "|";
