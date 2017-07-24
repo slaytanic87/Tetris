@@ -2,7 +2,8 @@ Tetris FX
 =========
 An tetris clone written by JavaFx.
 
-# Requirements
+#### Requirements
+
 * Java 8 RE or higher
 
 ![Screenshot](screenshot.jpg)
@@ -15,4 +16,4 @@ Future
 
 License
 =======
-free to distribute
+TODO
