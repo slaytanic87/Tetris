@@ -4,7 +4,7 @@ An tetris clone written by JavaFx.
 
 #### Requirements
 
-* Java 8 RE or higher
+* Java 8 JDK or higher
 
 ![Screenshot](screenshot.jpg)
 
