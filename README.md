@@ -6,7 +6,7 @@ An tetris clone written by JavaFx.
 
 * Java 8 RE or higher
 
-![Screenshot](screenshot.jpg){width=60% height=60%}
+![Screenshot](screenshot.jpg){:height="50%" width="50%"}
 
 
 Future
