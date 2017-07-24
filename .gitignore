@@ -1,7 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 /.idea/*
 *.iml
-target
+/target
 /.idea/copyright
 /.idea/libraries
 /.idea/checkstyle-idea.xml
