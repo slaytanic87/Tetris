@@ -34,12 +34,12 @@
             <Button layoutX="419.0" layoutY="107.0" mnemonicParsing="false" onAction="#closeDialog" style="-fx-background-color: #000000;" text="Close" textFill="#f2efef" />
             <Label layoutX="21.0" layoutY="126.0" text="© 2017 Lam" />
             <Label layoutX="21.0" layoutY="41.0" text="This is a free to distribute Software" />
-            <Label layoutX="21.0" layoutY="69.0" text="I do not own the license for the images">
+            <Label layoutX="21.0" layoutY="69.0" text="Tetris and the logo is a trademark of The Tetris Company, LLC">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label layoutX="21.0" layoutY="86.0" text="all rights and contributions go to the designer of the images.">
+            <Label layoutX="21.0" layoutY="86.0" text="all rights and contributions go to the designer of the logos.">
                <font>
                   <Font size="14.0" />
                </font>

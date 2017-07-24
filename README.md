@@ -16,4 +16,7 @@ Future
 
 License
 =======
-TODO
+
+Tetris and the logo is a trademark of The Tetris Company, LLC
+
+[MIT](http://en.wikipedia.org/wiki/MIT_License) license © Lam
