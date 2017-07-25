@@ -3,10 +3,7 @@ package de.tetris.controller.game;
 import de.tetris.controller.gui.GlobalController;
 import de.tetris.controller.gui.MainController;
 import de.tetris.controller.interfaces.IGameController;
-import de.tetris.model.Cell;
-import de.tetris.model.CollisionType;
-import de.tetris.model.GameState;
-import de.tetris.model.TetrisField;
+import de.tetris.model.*;
 import de.tetris.model.block.*;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
@@ -67,7 +64,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
         if (diff >= durationTime) {
             refreshView();
             collisionHandling();
-            currentBlock.moveDown(MainController.BLOCK_HEIGHT);
+            currentBlock.moveDown(MainController.CELL_HEIGHT);
             lastTime = now;
         }
     }
@@ -152,10 +149,10 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
                 if (block.getData()[row][col] == 1) {
                     GlobalController.getMainController().drawBlockViewRect(pos, block.getColor());
                 }
-                pos = pos.add(MainController.BLOCK_WIDTH, 0);
-                width += MainController.BLOCK_WIDTH;
+                pos = pos.add(MainController.CELL_WIDTH, 0);
+                width += MainController.CELL_WIDTH;
             }
-            pos = pos.add(0, MainController.BLOCK_HEIGHT);
+            pos = pos.add(0, MainController.CELL_HEIGHT);
             pos = pos.subtract(width, 0);
         }
     }
@@ -174,10 +171,10 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
                     GlobalController.getMainController().drawDebugRect(pos, Color.GRAY, value,
                             cell.getColor());
                 }
-                pos = pos.add(MainController.BLOCK_WIDTH, 0);
-                cols += MainController.BLOCK_WIDTH;
+                pos = pos.add(MainController.CELL_WIDTH, 0);
+                cols += MainController.CELL_WIDTH;
             }
-            pos = pos.add(0, MainController.BLOCK_HEIGHT);
+            pos = pos.add(0, MainController.CELL_HEIGHT);
             pos = pos.subtract(cols, 0);
         }
     }
@@ -191,10 +188,10 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
                 if (data[i][j] == 1) {
                     GlobalController.getMainController().drawRectWithContour(point2D, block.getColor());
                 }
-                point2D = point2D.add(MainController.BLOCK_WIDTH, 0);
-                colPtr += MainController.BLOCK_WIDTH; // move to right
+                point2D = point2D.add(MainController.CELL_WIDTH, 0);
+                colPtr += MainController.CELL_WIDTH; // move to right
             }
-            point2D = point2D.add(0, MainController.BLOCK_HEIGHT);
+            point2D = point2D.add(0, MainController.CELL_HEIGHT);
             point2D = point2D.subtract(colPtr, 0); // reset position to the left
         }
     }
@@ -266,7 +263,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     public void moveLeft() {
         isButtonHit = true;
         if (currentBlock.isMoveLeftAllowed(scope.getField())) {
-            currentBlock.moveLeft(MainController.BLOCK_WIDTH);
+            currentBlock.moveLeft(MainController.CELL_WIDTH);
         }
     }
 
@@ -274,7 +271,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     public void moveRight() {
         isButtonHit = true;
         if (currentBlock.isMoveRightAllowed(scope.getField())) {
-            currentBlock.moveRight(MainController.BLOCK_WIDTH);
+            currentBlock.moveRight(MainController.CELL_WIDTH);
         }
     }
 
@@ -282,7 +279,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     public void moveDown() {
         isButtonHit = true;
         collisionHandling();
-        currentBlock.moveDown(MainController.BLOCK_HEIGHT);
+        currentBlock.moveDown(MainController.CELL_HEIGHT);
     }
 
     @Override

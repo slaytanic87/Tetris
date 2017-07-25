@@ -1,4 +1,4 @@
-package de.tetris.controller.game;
+package de.tetris.model;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

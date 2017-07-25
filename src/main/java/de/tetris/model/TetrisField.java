@@ -1,6 +1,5 @@
 package de.tetris.model;
 
-import de.tetris.controller.game.Scores;
 import de.tetris.model.block.Block;
 import lombok.extern.slf4j.Slf4j;
 

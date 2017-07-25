@@ -87,4 +87,4 @@ Lokale Eventbus Verbindung implementieren, um später unterschiedliche Steuerung
 
 Info & Copyright etc. Fenster erstellen
 
-* IN PROGRESS
+* DONE

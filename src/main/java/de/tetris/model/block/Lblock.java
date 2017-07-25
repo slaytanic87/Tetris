@@ -26,7 +26,7 @@ public class Lblock extends Block {
         super(color);
         int colmiddle = (TetrisField.COLS / 2) - (data[0].length / 2);
         super.position = new GridPosition(colmiddle, 0);
-        super.topLeft = new Point2D(colmiddle * MainController.BLOCK_WIDTH, 0);
+        super.topLeft = new Point2D(colmiddle * MainController.CELL_WIDTH, 0);
         super.blockHeight = data.length;
         super.blockWidth = data[0].length;
     }

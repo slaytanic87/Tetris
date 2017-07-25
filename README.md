@@ -1,10 +1,12 @@
 Tetris FX
 =========
-An tetris clone written by JavaFx.
+An tetris clone written in JavaFx.
+The number of columns and rows does not correspond to the original Tetris.
 
 #### Requirements
 
 * Java 8 JDK or higher
+* Maven 3
 
 ![Screenshot](screenshot.jpg)
 
@@ -12,7 +14,7 @@ An tetris clone written by JavaFx.
 Future
 ======
 
-* binding controlling gesture with opencv lib
+* binding controlling with gestures (opencv based)
 
 License
 =======

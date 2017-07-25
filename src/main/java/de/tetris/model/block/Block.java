@@ -62,7 +62,7 @@ public abstract class Block implements Cloneable {
         if (pos > TetrisField.COLS) {
             int diff = (pos - TetrisField.COLS);
             position = position.substract(diff, 0);
-            topLeft = topLeft.subtract(MainController.BLOCK_WIDTH * diff, 0);
+            topLeft = topLeft.subtract(MainController.CELL_WIDTH * diff, 0);
         }
     }
 

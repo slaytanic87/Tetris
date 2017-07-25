@@ -44,7 +44,7 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         Parent root = loader.load();
         MainController controller = loader.getController();
-        controller.calcBlockSize(DEFAULT_NUMBER_OF_COLS, DEFAULT_NUMBER_OF_ROWS);
+        controller.calcCellSize(DEFAULT_NUMBER_OF_COLS, DEFAULT_NUMBER_OF_ROWS);
         GlobalController.setMainController(controller);
 
         field = new TetrisField(DEFAULT_NUMBER_OF_COLS, DEFAULT_NUMBER_OF_ROWS);

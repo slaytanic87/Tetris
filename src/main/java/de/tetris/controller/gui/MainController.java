@@ -1,6 +1,6 @@
 package de.tetris.controller.gui;
 
-import de.tetris.controller.game.Scores;
+import de.tetris.model.Scores;
 import de.tetris.controller.gui.animation.CathedralAnimation;
 import de.tetris.controller.gui.animation.UiMenuAnimation;
 import javafx.fxml.FXML;
@@ -24,8 +24,8 @@ import java.util.ResourceBundle;
 @Slf4j
 public class MainController implements Initializable {
 
-    public static double BLOCK_WIDTH = 20;
-    public static double BLOCK_HEIGHT = 20;
+    public static double CELL_WIDTH = 20;
+    public static double CELL_HEIGHT = 20;
 
     @FXML
     private Canvas gameView;
@@ -85,17 +85,17 @@ public class MainController implements Initializable {
         RadialGradient rg = new RadialGradient(0, 0, 0.5, 0.5, 0.9, true, CycleMethod.NO_CYCLE, stops);
         graphicsContext.setFill(rg);
         // shrink rect to visualize contour
-        graphicsContext.fillRect(topLeftpos.getX(), topLeftpos.getY(), BLOCK_WIDTH - 2, BLOCK_HEIGHT - 2);
+        graphicsContext.fillRect(topLeftpos.getX(), topLeftpos.getY(), CELL_WIDTH - 2, CELL_HEIGHT - 2);
     }
 
     public void drawDebugRect(Point2D topLeftpos, Color color, int model, Color fontColor) {
         graphicsContext.setFill(color);
-        graphicsContext.fillRect(topLeftpos.getX(), topLeftpos.getY(), BLOCK_WIDTH - 2, BLOCK_HEIGHT - 2);
+        graphicsContext.fillRect(topLeftpos.getX(), topLeftpos.getY(), CELL_WIDTH - 2, CELL_HEIGHT - 2);
 
         Color fColor = (fontColor == null) ? Color.AQUAMARINE : fontColor;
         graphicsContext.setFill(fColor);
-        graphicsContext.fillText(String.valueOf(model), topLeftpos.getX() + (BLOCK_WIDTH / 3),
-                topLeftpos.getY() + (BLOCK_HEIGHT / 2) + 2);
+        graphicsContext.fillText(String.valueOf(model), topLeftpos.getX() + (CELL_WIDTH / 3),
+                topLeftpos.getY() + (CELL_HEIGHT / 2) + 2);
     }
 
     public void clearGameFieldCanvas() {
@@ -108,7 +108,7 @@ public class MainController implements Initializable {
 
     public void drawBlockViewRect(Point2D topLeftpos, Color color) {
         blockQueueViewContext.setFill(color);
-        blockQueueViewContext.fillRect(topLeftpos.getX(), topLeftpos.getY(), BLOCK_WIDTH - 2, BLOCK_HEIGHT - 2);
+        blockQueueViewContext.fillRect(topLeftpos.getX(), topLeftpos.getY(), CELL_WIDTH - 2, CELL_HEIGHT - 2);
     }
 
     public void drawScore() {
@@ -144,9 +144,9 @@ public class MainController implements Initializable {
         return new Point2D(blockView.getWidth(), blockView.getHeight());
     }
 
-    public void calcBlockSize(int cols, int rows) {
-        BLOCK_WIDTH = gameView.getWidth() / cols;
-        BLOCK_HEIGHT = gameView.getHeight() / rows;
+    public void calcCellSize(int cols, int rows) {
+        CELL_WIDTH = gameView.getWidth() / cols;
+        CELL_HEIGHT = gameView.getHeight() / rows;
     }
 
 }
