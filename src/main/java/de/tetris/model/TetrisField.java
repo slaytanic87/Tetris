@@ -35,11 +35,11 @@ public class TetrisField {
         }
     }
 
-    public int getCols() {
+    public int getNumberCols() {
         return COLS;
     }
 
-    public int getRows() {
+    public int getNumberRows() {
         return ROWS;
     }
 
@@ -107,7 +107,7 @@ public class TetrisField {
             int c = 0;
             for(int col = 0; col < blockdata[row].length; col++) {
                 if (blockdata[row][col] == 1) {
-                    if (topLeftPos.getPosY() < this.getRows() && topLeftPos.getPosX() < this.getCols()) {
+                    if (topLeftPos.getPosY() < this.getNumberRows() && topLeftPos.getPosX() < this.getNumberCols()) {
                         field.get(topLeftPos.getPosY()).get(topLeftPos.getPosX()).setFilled(true);
                         field.get(topLeftPos.getPosY()).get(topLeftPos.getPosX()).setColor(block.getColor());
                     }
@@ -128,6 +128,7 @@ public class TetrisField {
      */
     public boolean isRowFilled(int rowPos) {
         boolean isRowFilled;
+        rowPos = rowPos < 0 ? 0 : rowPos;
         if (rowPos < field.size()) {
             List<Cell> row = field.get(rowPos);
             isRowFilled = row.get(0).isFilled();
@@ -135,9 +136,25 @@ public class TetrisField {
                 isRowFilled = isRowFilled && row.get(i).isFilled();
             }
         } else {
-            throw new RuntimeException("Row position is out of bound");
+            throw new IndexOutOfBoundsException("Row position is out of bounds");
         }
         return isRowFilled;
+    }
+
+    public GridPosition getFirstFilledCell(int colPos) {
+        colPos = colPos < 0 ? 0: colPos;
+        if (colPos < COLS) {
+            for (int row = 0; row < ROWS; row++) {
+                Cell cell = getCell(row, colPos);
+                if (cell.isFilled()) {
+                    return GridPosition.builder().posY(row).posX(colPos)
+                            .build();
+                }
+            }
+        } else {
+            throw new IndexOutOfBoundsException("Column position is out of bounds");
+        }
+        return null;
     }
 
     public int processFilledRows() {

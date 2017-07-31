@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class CommunicationServer extends AbstractVerticle {
+public class SocketServer extends AbstractVerticle {
 
     private static final int port = 1000;
     private static final int INIT_PARSER_SIZE = 1;
@@ -27,7 +27,7 @@ public class CommunicationServer extends AbstractVerticle {
         NetServerOptions options = new NetServerOptions();
         vertx.createNetServer(options).connectHandler(socket -> {
             // TODO handle incoming connection
-            readContent(vertx, socket);
+            processContent(vertx, socket);
         }).listen(port, event -> {
             if (event.succeeded()) {
                 startFuture.complete();
@@ -37,7 +37,7 @@ public class CommunicationServer extends AbstractVerticle {
         });
     }
 
-    private void readContent(Vertx vertx, NetSocket netSocket) {
+    private void processContent(Vertx vertx, NetSocket netSocket) {
         final RecordParser parser = RecordParser.newFixed(INIT_PARSER_SIZE, null);
 
         parser.setOutput(buff -> {

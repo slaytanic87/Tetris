@@ -6,7 +6,7 @@ import de.tetris.controller.gui.MainController;
 import de.tetris.controller.interfaces.GameInputBusEvent;
 import de.tetris.controller.interfaces.GameKeyEvent;
 import de.tetris.model.TetrisField;
-import de.tetris.service.CommunicationServer;
+import de.tetris.service.SocketServer;
 import io.vertx.core.VertxOptions;
 import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
 import io.vertx.ext.dropwizard.Match;
@@ -68,7 +68,7 @@ public class MainApp extends Application {
         ));
 
         GameInputBusEvent gameInputBusVerticle = new GameInputBusEvent(gameLoop);
-        CommunicationServer communicationServerVerticle = new CommunicationServer();
+        SocketServer communicationServerVerticle = new SocketServer();
 
         ((io.vertx.core.Vertx) vertx.getDelegate()).deployVerticle(gameInputBusVerticle);
         ((io.vertx.core.Vertx) vertx.getDelegate()).deployVerticle(communicationServerVerticle);

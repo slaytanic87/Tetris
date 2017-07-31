@@ -1,10 +1,12 @@
 package de.tetris.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
  * @author Lam
  */
+@Builder
 @Data
 public class GridPosition {
     private int posX;

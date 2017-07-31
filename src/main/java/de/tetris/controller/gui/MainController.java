@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.text.Font;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URL;
@@ -49,12 +50,18 @@ public class MainController implements Initializable {
     private UiMenuAnimation animation;
     private CathedralAnimation cathedralAnimation;
 
+    private Font globalFont;
+    private static final String FONT_PATH = "/fxml/fonts/dancefloor.ttf";
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         graphicsContext = gameView.getGraphicsContext2D();
         blockQueueViewContext = blockView.getGraphicsContext2D();
         scoreViewContext = scoreView.getGraphicsContext2D();
 
+        globalFont = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), -1);
+        scoreViewContext.setFont(globalFont);
+        
         animation = new UiMenuAnimation();
         animation.createMenuStart(graphicsContext, gameView.getWidth(), gameView.getHeight());
         animation.createPauseAnimation(graphicsContext, gameView.getWidth(), gameView.getHeight());

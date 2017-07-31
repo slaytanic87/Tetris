@@ -16,8 +16,8 @@ import java.util.List;
 public class CathedralAnimation extends AnimationTimer {
 
     private static final int NUMBER_OF_TILES = 18;
-    private static final double SECONDS_IN_NANOSECONDS = 1000000000.0;
-    private static final double DURATIONCONSTANT = 0.10;
+    private static final double SECOND_AS_NANOSECONDS = 1000000000.0;
+    private static final double DURATIONPERFRAME = 0.10;
     private static final String BASE_PATH = "/fxml/images/cathedral/cathedral";
 
     private long lastTime;
@@ -45,8 +45,8 @@ public class CathedralAnimation extends AnimationTimer {
     @Override
     public void handle(long now) {
         double diff = now - lastTime;
-        double timeAsSeconds = (diff / SECONDS_IN_NANOSECONDS);
-        int index = (int)((timeAsSeconds % (NUMBER_OF_TILES * DURATIONCONSTANT)) / DURATIONCONSTANT);
+        double timeDiffAsSeconds = (diff / SECOND_AS_NANOSECONDS);
+        int index = (int)((timeDiffAsSeconds % (NUMBER_OF_TILES * DURATIONPERFRAME)) / DURATIONPERFRAME);
         graphicsContext.drawImage(tilesets.get(index), 0, 0, canvas.getWidth(), canvas.getHeight());
     }
 }
