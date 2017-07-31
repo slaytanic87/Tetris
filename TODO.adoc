@@ -88,3 +88,15 @@ Lokale Eventbus Verbindung implementieren, um später unterschiedliche Steuerung
 Info & Copyright etc. Fenster erstellen
 
 * DONE
+
+=== Neue passende Menüschrift
+
+Schrift für Scoring/Menü hinzufügen
+
+* TODO
+
+=== Punkte Animation
+
+Wenn eine Zeile abgearbeitet wird, dann soll der Punktescore eingeblendet werden
+
+* TODO
