@@ -17,8 +17,8 @@ import static org.junit.Assert.assertEquals;
 @Slf4j
 public class TestFieldWithBlock {
 
-    public final static int DEFAULT_COLS = 20;
-    public final static int DEFAULT_ROWS = 40;
+    private final static int DEFAULT_COLS = 20;
+    private final static int DEFAULT_ROWS = 40;
 
     private TetrisField scope;
 
@@ -26,8 +26,8 @@ public class TestFieldWithBlock {
     public void shouldIntegrateBlock() {
         scope = new TetrisField(DEFAULT_COLS, DEFAULT_ROWS);
 
-        for (int i = 0; i < scope.getCols(); i++) {
-            scope.setCell(scope.getRows() - 1, i, Cell.builder().filled(true)
+        for (int i = 0; i < scope.getNumberCols(); i++) {
+            scope.setCell(scope.getNumberRows() - 1, i, Cell.builder().filled(true)
                     .color(Color.RED).build());
         }
 
@@ -42,9 +42,8 @@ public class TestFieldWithBlock {
     public void shouldDetectGroundCollision() {
         scope = new TetrisField(DEFAULT_COLS, DEFAULT_ROWS);
         int middleCol = DEFAULT_COLS / 3;
-        int lastRow = DEFAULT_ROWS;
         Block block = new Lblock(Color.MAGENTA);
-        block.setTopLeft(new Point2D(middleCol, lastRow - 1));
+        block.setTopLeft(new Point2D(middleCol, DEFAULT_ROWS - 1));
         block.setGridposition(new GridPosition(middleCol, 38));
         CollisionType ctype = scope.detectFutureCollision(block);
         assertEquals(CollisionType.GROUND_BELOW, ctype);
@@ -96,6 +95,21 @@ public class TestFieldWithBlock {
         isFilled = scope.isRowFilled(3);
         assertEquals(false, isFilled);
         isFilled = scope.isRowFilled(4);
+        assertEquals(false, isFilled);
+    }
+
+    @Test
+    public void shouldNotProcessUnfilledRows() {
+        scope = new TetrisField(DEFAULT_COLS, DEFAULT_ROWS);
+        for (int col = 0; col < DEFAULT_COLS - 1; col++) {
+            Cell cell = new Cell();
+            cell.setFilled(true);
+            scope.setCell(3, col, cell);
+        }
+        boolean isFilled = scope.isRowFilled(3);
+        assertEquals(false, isFilled);
+        scope.processFilledRows();
+        isFilled = scope.isRowFilled(3);
         assertEquals(false, isFilled);
     }
 }
