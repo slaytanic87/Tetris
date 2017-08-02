@@ -19,7 +19,7 @@ public class TetrisField {
     public static int COLS = 0;
     public static int ROWS = 0;
 
-    private List<List<Cell>> field = null;
+    private List<List<Cell>> fieldData = null;
 
     public TetrisField(int cols, int rows) {
         COLS = cols;
@@ -29,7 +29,7 @@ public class TetrisField {
     }
 
     public void resetModel() {
-        field = new ArrayList<List<Cell>>(ROWS);
+        fieldData = new ArrayList<List<Cell>>(ROWS);
         for (int i = 0; i < ROWS; i++) {
             addEmptyRow();
         }
@@ -54,19 +54,19 @@ public class TetrisField {
         for (int i = 0; i < COLS; i++) {
             row.add(i, new Cell());
         }
-        this.field.add(0, row);
+        this.fieldData.add(0, row);
     }
 
     public Cell getCell(int rowIndex, int colIndex) {
-        return this.field.get(rowIndex).get(colIndex);
+        return this.fieldData.get(rowIndex).get(colIndex);
     }
 
     public void setCell(int rowIndex, int colIndex, Cell cell) {
-        this.field.get(rowIndex).set(colIndex, cell);
+        this.fieldData.get(rowIndex).set(colIndex, cell);
     }
 
     public void removeRow(int index) {
-        this.field.remove(index);
+        this.fieldData.remove(index);
     }
 
 
@@ -79,13 +79,13 @@ public class TetrisField {
                 int currentCol = col + blockPosTopLeft.getPosX();
                 int currentRow = row + blockPosTopLeft.getPosY();
                 if (blockData[row][col] == 1) {
-                    if (currentRow >= field.size()) {
+                    if (currentRow >= fieldData.size()) {
                         return CollisionType.GROUND_BELOW;
                     }
-                    if (field.get(1).get(currentCol).isFilled()) {
+                    if (fieldData.get(1).get(currentCol).isFilled()) {
                         return CollisionType.BLOCK_OVERFLOW;
                     }
-                    if (field.get(currentRow).get(currentCol).isFilled()) {
+                    if (fieldData.get(currentRow).get(currentCol).isFilled()) {
                         log.debug("Block below");
                         return CollisionType.BLOCK_BELOW;
                     }
@@ -97,7 +97,7 @@ public class TetrisField {
 
 
     /**
-     * Copy block grid data into tetris field grid data.
+     * Copy block grid data into tetris fieldData grid data.
      * @param block {@link Block}
      */
     public void placeBlock(Block block) {
@@ -108,8 +108,8 @@ public class TetrisField {
             for(int col = 0; col < blockdata[row].length; col++) {
                 if (blockdata[row][col] == 1) {
                     if (topLeftPos.getPosY() < this.getNumberRows() && topLeftPos.getPosX() < this.getNumberCols()) {
-                        field.get(topLeftPos.getPosY()).get(topLeftPos.getPosX()).setFilled(true);
-                        field.get(topLeftPos.getPosY()).get(topLeftPos.getPosX()).setColor(block.getColor());
+                        fieldData.get(topLeftPos.getPosY()).get(topLeftPos.getPosX()).setFilled(true);
+                        fieldData.get(topLeftPos.getPosY()).get(topLeftPos.getPosX()).setColor(block.getColor());
                     }
                 }
                 topLeftPos = topLeftPos.addition(1, 0);
@@ -118,7 +118,7 @@ public class TetrisField {
             topLeftPos.substract(c, 0);
             topLeftPos = topLeftPos.addition(0, 1);
         }
-        log.debug("block placed to field model");
+        log.debug("block placed to fieldData model");
     }
 
     /**
@@ -129,8 +129,8 @@ public class TetrisField {
     public boolean isRowFilled(int rowPos) {
         boolean isRowFilled;
         rowPos = rowPos < 0 ? 0 : rowPos;
-        if (rowPos < field.size()) {
-            List<Cell> row = field.get(rowPos);
+        if (rowPos < fieldData.size()) {
+            List<Cell> row = fieldData.get(rowPos);
             isRowFilled = row.get(0).isFilled();
             for (int i = 1; i < row.size(); i++) {
                 isRowFilled = isRowFilled && row.get(i).isFilled();
@@ -159,7 +159,7 @@ public class TetrisField {
 
     public int processFilledRows() {
         int processedRows = 0;
-        for (int row = 0; row < field.size(); row++) {
+        for (int row = 0; row < fieldData.size(); row++) {
             boolean isfilled = isRowFilled(row);
             if (isfilled) {
                 removeRow(row);
@@ -172,13 +172,13 @@ public class TetrisField {
     }
 
     public List<List<Cell>> getField() {
-        return this.field;
+        return this.fieldData;
     }
 
     public String toString() {
         String str = "\n";
 
-        for (List<Cell> row: field) {
+        for (List<Cell> row: fieldData) {
             for (Cell cell: row) {
                 str += cell.isFilled() ? " 1 " : " 0 ";
             }
