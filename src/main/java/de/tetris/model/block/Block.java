@@ -6,12 +6,14 @@ import de.tetris.model.GridPosition;
 import de.tetris.model.TetrisField;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 /**
  * @author Lam
  */
+@Slf4j
 public abstract class Block implements Cloneable {
 
     protected Color color;
@@ -86,6 +88,7 @@ public abstract class Block implements Cloneable {
     }
 
     protected boolean isNotBehindLeft() {
+        // if the position is greater than 2 Cells
         return (position.getPosX() > 0);
     }
 
