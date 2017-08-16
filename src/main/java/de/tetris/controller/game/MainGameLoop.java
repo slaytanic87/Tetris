@@ -84,6 +84,9 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
                 int processedRows = scope.processFilledRows();
                 Scores.INSTANCE.addFinishRows(processedRows);
                 Scores.INSTANCE.addScore(processedRows);
+                if (processedRows > 0) {
+                    GlobalController.getMainController().drawFadeInScore(processedRows);
+                }
                 log.debug("Current duration time: {} ns", durationTime);
                 durationTime = scope.calcSpeed();
                 log.debug("New duration time: {} ns", durationTime);

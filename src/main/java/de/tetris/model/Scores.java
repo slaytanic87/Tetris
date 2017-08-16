@@ -14,7 +14,7 @@ public class Scores {
 
     public static Scores INSTANCE = new Scores();
 
-    private static final int ROWPOINT = 100;
+    public static final int ROWPOINT = 100;
     private static final int LEVELUP = 8;
 
     private BigDecimal mainscore;

@@ -1,8 +1,11 @@
 package de.tetris.controller.gui;
 
-import de.tetris.model.Scores;
 import de.tetris.controller.gui.animation.CathedralAnimation;
 import de.tetris.controller.gui.animation.UiMenuAnimation;
+import de.tetris.model.Scores;
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.PathTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -13,7 +16,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URL;
@@ -51,7 +59,7 @@ public class MainController implements Initializable {
     private CathedralAnimation cathedralAnimation;
 
     private Font globalFont;
-    private static final String FONT_PATH = "/fxml/fonts/dancefloor.ttf";
+    public static final String FONT_PATH = "/fxml/fonts/dancefloor.ttf";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -121,11 +129,53 @@ public class MainController implements Initializable {
     public void drawScore() {
         scoreViewContext.clearRect(0, 0, scoreView.getWidth(), scoreView.getHeight());
         scoreViewContext.setFill(Color.BLUEVIOLET);
-        double posY = scoreView.getHeight() / 2 + 2;
-        double blockDistance = posY / 2;
-        scoreViewContext.fillText("Score " + String.valueOf(Scores.INSTANCE.getMainscore()), 10, blockDistance);
+        Text scoreText = new Text("Score " + String.valueOf(Scores.INSTANCE.getMainscore()));
+        scoreText.setFont(globalFont);
+        Text levelText = new Text("Level " + String.valueOf(Scores.INSTANCE.getLevel()));
+        levelText.setFont(globalFont);
+
+        double posY = (scoreView.getHeight() / 2) - scoreText.getBoundsInLocal().getHeight();
+        double blockDistance = (scoreView.getHeight() / 2) + levelText.getBoundsInLocal().getHeight();
+
+        scoreViewContext.fillText(scoreText.getText(), 10, posY);
         scoreViewContext.setFill(Color.AQUAMARINE);
-        scoreViewContext.fillText("Level " + String.valueOf(Scores.INSTANCE.getLevel()), 10, posY + blockDistance);
+        scoreViewContext.fillText(levelText.getText(), 10, blockDistance);
+    }
+
+    public void drawFadeInScore(int processedRows) {
+        Text newScoreText = new Text("+" + String.valueOf(processedRows * Scores.ROWPOINT));
+        newScoreText.setFill(Color.YELLOW);
+        newScoreText.setFont(new Font(35));
+
+        double xpos = gameView.getWidth() / 2;
+        double ypos = gameView.getHeight() / 2;
+        newScoreText.setX(xpos);
+        newScoreText.setY(ypos);
+
+        canvasPane.getChildren().add(newScoreText);
+        FadeTransition ft = new FadeTransition(Duration.millis(1000), newScoreText);
+        ft.setCycleCount(1);
+        ft.setAutoReverse(false);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.0);
+
+        Path path = new Path();
+        // start point
+        path.getElements().add(new MoveTo(xpos, ypos));
+        path.getElements().add(new LineTo(xpos, ypos - 100));
+
+        PathTransition pathTransition = new PathTransition();
+        pathTransition.setDuration(Duration.millis(1000));
+        pathTransition.setPath(path);
+        pathTransition.setNode(newScoreText);
+        pathTransition.setOrientation(PathTransition.OrientationType.NONE);
+        pathTransition.setCycleCount(1);
+        pathTransition.setAutoReverse(true);
+
+        ParallelTransition seTransition = new ParallelTransition();
+        seTransition.getChildren().addAll(pathTransition, ft);
+        seTransition.setCycleCount(1);
+        seTransition.play();
     }
 
     public void drawBlockViewGrid(int lines) {

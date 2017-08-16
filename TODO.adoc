@@ -100,3 +100,9 @@ Schrift für Scoring/Menü hinzufügen
 Wenn eine Zeile abgearbeitet wird, dann soll der Punktescore eingeblendet werden
 
 * TODO
+
+=== Steinumrandung
+
+Backsteinrand um Spielfeld
+
+* TODO
