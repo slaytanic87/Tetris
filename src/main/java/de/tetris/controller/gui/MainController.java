@@ -143,6 +143,7 @@ public class MainController implements Initializable {
     }
 
     public void drawFadeInScore(int processedRows) {
+        final int animationDuration = 1000;
         Text newScoreText = new Text("+" + String.valueOf(processedRows * Scores.ROWPOINT));
         newScoreText.setFill(Color.YELLOW);
         newScoreText.setFont(new Font(35));
@@ -153,7 +154,7 @@ public class MainController implements Initializable {
         newScoreText.setY(ypos);
 
         canvasPane.getChildren().add(newScoreText);
-        FadeTransition ft = new FadeTransition(Duration.millis(1000), newScoreText);
+        FadeTransition ft = new FadeTransition(Duration.millis(animationDuration), newScoreText);
         ft.setCycleCount(1);
         ft.setAutoReverse(false);
         ft.setFromValue(1.0);
@@ -162,10 +163,11 @@ public class MainController implements Initializable {
         Path path = new Path();
         // start point
         path.getElements().add(new MoveTo(xpos, ypos));
+        // move to
         path.getElements().add(new LineTo(xpos, ypos - 100));
 
         PathTransition pathTransition = new PathTransition();
-        pathTransition.setDuration(Duration.millis(1000));
+        pathTransition.setDuration(Duration.millis(animationDuration));
         pathTransition.setPath(path);
         pathTransition.setNode(newScoreText);
         pathTransition.setOrientation(PathTransition.OrientationType.NONE);
