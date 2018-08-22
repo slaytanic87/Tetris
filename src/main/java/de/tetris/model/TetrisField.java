@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class TetrisField {
 
     private static final int SPEEDSTEPINMILLIS = 40;
-    public static long INITIALSPEEDINMILLI;
+    public static long INITIAL_LOWEST_SPEED_IN_MILLI;
 
     public static int COLS = 0;
     public static int ROWS = 0;
@@ -44,7 +44,7 @@ public class TetrisField {
     }
 
     public long calcSpeed() {
-        long newSpeed = INITIALSPEEDINMILLI - TimeUnit.MILLISECONDS
+        long newSpeed = INITIAL_LOWEST_SPEED_IN_MILLI - TimeUnit.MILLISECONDS
                 .toNanos(SPEEDSTEPINMILLIS * Scores.INSTANCE.getLevel());
         return (newSpeed < 0) ? 0 : newSpeed;
     }

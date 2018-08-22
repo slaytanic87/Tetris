@@ -256,7 +256,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
 
     public void setDuration(Duration duration) {
         long initNanos = TimeUnit.MILLISECONDS.toNanos((long) duration.toMillis());
-        TetrisField.INITIALSPEEDINMILLI = initNanos;
+        TetrisField.INITIAL_LOWEST_SPEED_IN_MILLI = initNanos;
         durationTime = initNanos;
     }
 
