@@ -25,7 +25,7 @@ public class UiMenuAnimation {
         menuStartAnimation.setCycleCount(Timeline.INDEFINITE);
 
         final Text pressSpace = new Text("- Press Space -");
-        final Text control = new Text("CTRL ALT ← ↓ →");
+        final Text control = new Text("CTRL ALT LEFT DOWN RIGHT");
         final Text about = new Text("A: About");
 
         final Font spaceFont = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), 14);

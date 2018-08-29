@@ -13,6 +13,7 @@ import io.vertx.ext.dropwizard.Match;
 import io.vertx.ext.dropwizard.MatchType;
 import io.vertx.rxjava.core.Vertx;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -72,6 +73,10 @@ public class MainApp extends Application {
 
         ((io.vertx.core.Vertx) vertx.getDelegate()).deployVerticle(gameInputBusVerticle);
         ((io.vertx.core.Vertx) vertx.getDelegate()).deployVerticle(communicationServerVerticle);
+        primaryStage.setOnCloseRequest(t -> {
+            Platform.exit();
+            System.exit(0);
+        });
         primaryStage.show();
     }
 
