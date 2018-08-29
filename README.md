@@ -8,6 +8,12 @@ The number of columns and rows does not correspond to the original Tetris.
 * Java 8 JDK or higher
 * Maven 3
 
+#### Run Application
+
+```console
+java -jar tetris-1.0-SNAPSHOT-fat.jar
+```
+
 ![Screenshot](screenshot.png)
 
 
