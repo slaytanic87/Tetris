@@ -16,6 +16,7 @@ java -jar tetris-1.0-SNAPSHOT-fat.jar
 
 ![Screenshot](screenshot.png)
 
+***
 
 Rest Service
 ======
