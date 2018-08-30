@@ -129,9 +129,9 @@ public class MainController implements Initializable {
     public void drawScore() {
         scoreViewContext.clearRect(0, 0, scoreView.getWidth(), scoreView.getHeight());
         scoreViewContext.setFill(Color.BLUEVIOLET);
-        Text scoreText = new Text("Score " + String.valueOf(Scores.INSTANCE.getMainscore()));
+        Text scoreText = new Text("Score " + String.valueOf(Scores.getInstance().getMainscore()));
         scoreText.setFont(globalFont);
-        Text levelText = new Text("Level " + String.valueOf(Scores.INSTANCE.getLevel()));
+        Text levelText = new Text("Level " + String.valueOf(Scores.getInstance().getLevel()));
         levelText.setFont(globalFont);
 
         double posY = (scoreView.getHeight() / 2) - scoreText.getBoundsInLocal().getHeight();
@@ -144,7 +144,7 @@ public class MainController implements Initializable {
 
     public void drawFadeInScore(int processedRows) {
         final int animationDuration = 1000;
-        Text newScoreText = new Text("+" + String.valueOf(processedRows * Scores.ROWPOINT));
+        Text newScoreText = new Text("+" + String.valueOf(processedRows * Scores.getInstance().ROWPOINT));
         newScoreText.setFill(Color.YELLOW);
         newScoreText.setFont(new Font(35));
 

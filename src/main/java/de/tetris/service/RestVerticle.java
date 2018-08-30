@@ -53,6 +53,9 @@ public class RestVerticle extends AbstractVerticle {
         apiRouter.route().handler(BodyHandler.create());
         apiRouter.get("/field").handler(this::handleField);
         apiRouter.get("/gamestate").handler(this::handleGamestate);
+        apiRouter.get("/speed").handler(this::handleGameSpeed);
+        apiRouter.get("/level").handler(this::handleGameLevel);
+        apiRouter.get("/finishedrows").handler(this::handleProcessedRows);
         apiRouter.post("/turn/").handler(this::handleGameController);
 
         final HttpServerOptions options = new HttpServerOptions().setCompressionSupported(true);
@@ -69,6 +72,21 @@ public class RestVerticle extends AbstractVerticle {
                                 startFuture.fail(event.cause());
                             }
                         });
+    }
+
+    private void handleProcessedRows(RoutingContext routingContext) {
+        vertx.eventBus().send(DataModelVerticle.EVENT_GET_FINISHED_ROWS, null,
+                getDefaultStringHandler(routingContext));
+    }
+
+    private void handleGameLevel(RoutingContext routingContext) {
+        vertx.eventBus().send(DataModelVerticle.EVENT_GET_GAME_LEVEL, null,
+                getDefaultStringHandler(routingContext));
+    }
+
+    private void handleGameSpeed(RoutingContext routingContext) {
+        vertx.eventBus().send(DataModelVerticle.EVENT_GET_GAME_SPEED, null,
+                getDefaultStringHandler(routingContext));
     }
 
     private void handleGamestate(RoutingContext routingContext) {

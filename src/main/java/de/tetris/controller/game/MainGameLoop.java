@@ -82,8 +82,8 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
                 }
                 queue.add(generateBlock());
                 int processedRows = scope.processFilledRows();
-                Scores.INSTANCE.addFinishRows(processedRows);
-                Scores.INSTANCE.addScore(processedRows);
+                Scores.getInstance().addFinishRows(processedRows);
+                Scores.getInstance().addScore(processedRows);
                 if (processedRows > 0) {
                     GlobalController.getMainController().drawFadeInScore(processedRows);
                 }
@@ -236,7 +236,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     private void initGame() {
         scope.resetModel();
         queue.clear();
-        Scores.INSTANCE.resetScores();
+        Scores.getInstance().resetScores();
         currentBlock = generateBlock();
         generateBlocks(MAX_QEUESIZE);
         drawBlocksFromQueue();
@@ -341,6 +341,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
         GlobalController.getMainController().startButtonAnimationOn();
         GlobalController.getMainController().pauseAnimationOff();
         this.stop();
+        Scores.getInstance().resetScores();
         scope.resetModel();
         log.debug("Game stopped!");
     }

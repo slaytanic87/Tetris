@@ -21,12 +21,16 @@ Rest Service
 ======
 You can also control the game over the rest api under localhost:3000/api
 
-| Requesttype   |      Path        | Body/Param |Description |
+| Request type   |      Path       | Body/Param |Description |
 | ------------- | ---------------- | ---------- | ---------- |
-| GET           |  `/field`     | None       | Access current field state |
-| GET           |  `/gamestate` | None       | Access the state of the game e.g started or not |
-| POST          |  `/turn`      | see (1)    | control the tetris blocks |
+| GET           |  `/field`        | None       | Get current field model |
+| GET           |  `/gamestate`    | None       | Access the state of the game e.g started or not |
+| GET           |  `/speed`        | None       | Get the current game speed |
+| GET           |  `/level`        | None       | Get the current level |
+| GET           |  `/finishedrows` | None       | Get processed rows    |
+| POST          |  `/turn`         | see (1)    | control the tetris blocks |
 
+---
 (1)
 ```javascript
 {
@@ -46,7 +50,7 @@ Following commands are available
 | 6   |  Start game  |
 | 7   |  Pause game  |
 | 8   |  Stop game   |
-
+---
 
 License
 =======

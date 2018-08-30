@@ -45,7 +45,7 @@ public class TetrisField {
 
     public long calcSpeed() {
         long newSpeed = INITIAL_LOWEST_SPEED_IN_MILLI - TimeUnit.MILLISECONDS
-                .toNanos(SPEEDSTEPINMILLIS * Scores.INSTANCE.getLevel());
+                .toNanos(SPEEDSTEPINMILLIS * Scores.getInstance().getLevel());
         return (newSpeed < 0) ? 0 : newSpeed;
     }
 

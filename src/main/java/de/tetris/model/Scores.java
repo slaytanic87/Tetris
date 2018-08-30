@@ -12,7 +12,8 @@ import java.math.BigDecimal;
 @Data
 public class Scores {
 
-    public static Scores INSTANCE = new Scores();
+    private static final Object mutex = new Object();
+    private static volatile Scores INSTANCE = new Scores();
 
     public static final int ROWPOINT = 100;
     private static final int LEVELUP = 8;
@@ -29,6 +30,18 @@ public class Scores {
         resetScores();
     }
 
+    public static Scores getInstance() {
+        if (INSTANCE == null) {
+            synchronized (mutex) {       // While we were waiting for the mutex, another
+                if (INSTANCE == null) {  // thread may have instantiated the object.
+                    INSTANCE = new Scores();
+                }
+            }
+        }
+        return INSTANCE;
+    }
+
+
     public void addScore(int finishedRows) {
         mainscore = mainscore.add(new BigDecimal(finishedRows * ROWPOINT));
         log.debug("Score update: {}", mainscore.toPlainString());
@@ -38,10 +51,6 @@ public class Scores {
     public void addFinishRows(int rows) {
         finishRows += rows;
         level = Math.floorDiv(finishRows, LEVELUP) + 1;
-    }
-
-    public void incrementLevel() {
-        level++;
     }
 
     public void resetScores() {
