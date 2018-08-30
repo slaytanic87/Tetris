@@ -54,6 +54,11 @@ Following commands are available
 | 8   |  Stop game   |
 ---
 
+Future work
+======
+Websocket to push gamemodel state to the client 
+
+
 License
 =======
 
