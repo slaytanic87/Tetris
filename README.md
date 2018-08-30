@@ -30,7 +30,7 @@ You can also control the game over the rest api under localhost:3000/api
 (1)
 ```javascript
 {
-    cmd : 1;
+    cmd : 1
 }
 ```
 
