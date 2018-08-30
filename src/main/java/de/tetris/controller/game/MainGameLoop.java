@@ -341,6 +341,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
         GlobalController.getMainController().startButtonAnimationOn();
         GlobalController.getMainController().pauseAnimationOff();
         this.stop();
+        scope.resetModel();
         log.debug("Game stopped!");
     }
 

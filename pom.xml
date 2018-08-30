@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <vertx.version>3.3.3</vertx.version>
+        <vertx.version>3.5.3</vertx.version>
     </properties>
 
     <dependencies>

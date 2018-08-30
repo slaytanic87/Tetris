@@ -8,7 +8,9 @@ import lombok.Getter;
 @Getter
 public class GameState {
 
-    public static GameState INSTANCE = null;
+    private static final Object mutex = new Object();
+
+    private static volatile GameState INSTANCE = null;
 
     private boolean isDebug = false;
     private boolean isPaused = false;
@@ -20,7 +22,11 @@ public class GameState {
 
     public static GameState getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new GameState();
+            synchronized (mutex) {       // While we were waiting for the mutex, another
+                if (INSTANCE == null) {  // thread may have instantiated the object.
+                    INSTANCE = new GameState();
+                }
+            }
         }
         return INSTANCE;
     }

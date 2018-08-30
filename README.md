@@ -17,10 +17,36 @@ java -jar tetris-1.0-SNAPSHOT-fat.jar
 ![Screenshot](screenshot.png)
 
 
-Future
+Rest Service
 ======
+You can also control the game over the rest api under localhost:3000/api
 
-* binding controlling with gestures (opencv based)
+| Requesttype   |      Path        | Body/Param |Description |
+| ------------- | ---------------- | ---------- | ---------- |
+| GET           |  `/field`     | None       | Access current field state |
+| GET           |  `/gamestate` | None       | Access the state of the game e.g started or not |
+| POST          |  `/turn`      | see (1)    | control the tetris blocks |
+
+(1)
+```javascript
+{
+    cmd : 1;
+}
+```
+
+Following commands are available
+
+| cmd |  Description |
+| --- | ------------ |
+| 1   |  Move left   |
+| 2   |  Move right  |
+| 3   |  Move down   |
+| 4   |  Rotate left |
+| 5   |  Rotate right|
+| 6   |  Start game  |
+| 7   |  Pause game  |
+| 8   |  Stop game   |
+
 
 License
 =======
