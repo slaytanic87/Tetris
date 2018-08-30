@@ -6,6 +6,7 @@ import de.tetris.model.rest.Command;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.Json;
 import io.vertx.ext.bridge.PermittedOptions;
@@ -15,6 +16,7 @@ import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.RoutingContext;
 import io.vertx.rxjava.ext.web.handler.BodyHandler;
+import io.vertx.rxjava.ext.web.handler.CorsHandler;
 import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -51,6 +53,15 @@ public class RestVerticle extends AbstractVerticle {
 
         // enables the reading of the request body for all routes globally
         apiRouter.route().handler(BodyHandler.create());
+        apiRouter.route().handler(CorsHandler.create("*")
+                .allowedMethod(HttpMethod.GET)
+                .allowedMethod(HttpMethod.POST)
+                .allowedMethod(HttpMethod.OPTIONS)
+                .allowedHeader("Access-Control-Request-Method")
+                .allowedHeader("Access-Control-Allow-Origin")
+                .allowedHeader("Access-Control-Allow-Headers")
+                .allowedHeader("Content-Type"));
+
         apiRouter.get("/field").handler(this::handleField);
         apiRouter.get("/gamestate").handler(this::handleGamestate);
         apiRouter.get("/speed").handler(this::handleGameSpeed);
