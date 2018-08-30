@@ -52,7 +52,6 @@ public class RestVerticle extends AbstractVerticle {
         apiRouter.route("/eventbus/*").handler(sockJSHandler);
 
         // enables the reading of the request body for all routes globally
-        apiRouter.route().handler(BodyHandler.create());
         apiRouter.route().handler(CorsHandler.create("*")
                 .allowedMethod(HttpMethod.GET)
                 .allowedMethod(HttpMethod.POST)
@@ -61,6 +60,7 @@ public class RestVerticle extends AbstractVerticle {
                 .allowedHeader("Access-Control-Allow-Origin")
                 .allowedHeader("Access-Control-Allow-Headers")
                 .allowedHeader("Content-Type"));
+        apiRouter.route().handler(BodyHandler.create());
 
         apiRouter.get("/field").handler(this::handleField);
         apiRouter.get("/gamestate").handler(this::handleGamestate);
