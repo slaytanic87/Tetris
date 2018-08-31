@@ -54,10 +54,17 @@ Following commands are available
 | 8   |  Stop game   |
 ---
 
+Handling data field with SockJs
+======
+Create your SockJS eventbus on the client side with following path 
+* `yourTetrisFxAppIp:3000/api/eventbus`
+
+And register your handler with following address 
+* `event.websocket.fielddata`
+
 Future work
 ======
-Websocket to push gamemodel state to the client 
-
+-
 
 License
 =======

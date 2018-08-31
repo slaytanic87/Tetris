@@ -3,6 +3,8 @@ package de.tetris.service;
 import de.tetris.controller.interfaces.DataModelVerticle;
 import de.tetris.controller.interfaces.GameInputBusEventVerticle;
 import de.tetris.model.rest.Command;
+import de.tetris.model.rest.ErrorCode;
+import de.tetris.model.rest.Response;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -147,10 +149,12 @@ public class RestVerticle extends AbstractVerticle {
                         getDefaultStringHandler(routingContext));
                 break;
             default:
-                routingContext.response().putHeader("content-type", TEXT_PLAIN)
+                Response response = new Response();
+                response.setCode(ErrorCode.UNKNOWN);
+                response.setMessage("UNKNOWN_COMMAND");
+                routingContext.response().putHeader("content-type", APPLICATION_JSON)
                         .setStatusCode(501)
-                        .putHeader("content-type", "text/plain")
-                        .end("UNKNOWN_COMMAND");
+                        .end(Json.encode(response));
         }
     }
 

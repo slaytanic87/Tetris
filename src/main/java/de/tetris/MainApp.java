@@ -8,6 +8,7 @@ import de.tetris.controller.interfaces.GameInputBusEventVerticle;
 import de.tetris.controller.interfaces.GameKeyEvent;
 import de.tetris.model.TetrisField;
 import de.tetris.service.RestVerticle;
+import de.tetris.utils.MessageEventUtils;
 import io.vertx.core.VertxOptions;
 import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
 import io.vertx.ext.dropwizard.Match;
@@ -51,6 +52,15 @@ public class MainApp extends Application {
         controller.calcCellSize(DEFAULT_NUMBER_OF_COLS, DEFAULT_NUMBER_OF_ROWS);
         GlobalController.setMainController(controller);
 
+        vertx = Vertx.vertx(new VertxOptions().setMetricsOptions(
+                new DropwizardMetricsOptions()
+                        .setRegistryName("vertx")
+                        .addMonitoredHttpClientEndpoint(
+                                new Match().setValue(".*").setType(MatchType.REGEX))
+                        .setEnabled(true)
+        ));
+        MessageEventUtils.getInstance().setEventBus(vertx.eventBus());
+
         field = new TetrisField(DEFAULT_NUMBER_OF_COLS, DEFAULT_NUMBER_OF_ROWS);
         gameLoop = new MainGameLoop(field);
         scene = new Scene(root);
@@ -67,13 +77,7 @@ public class MainApp extends Application {
 
         gameLoop.setDuration(Duration.millis(GAME_DURATION_MILLIS));
 
-        vertx = Vertx.vertx(new VertxOptions().setMetricsOptions(
-                new DropwizardMetricsOptions()
-                        .setRegistryName("vertx")
-                        .addMonitoredHttpClientEndpoint(
-                                new Match().setValue(".*").setType(MatchType.REGEX))
-                        .setEnabled(true)
-        ));
+
         GameInputBusEventVerticle gameInputBusVerticle = new GameInputBusEventVerticle(gameLoop);
         DataModelVerticle dataModelVerticle = new DataModelVerticle(field);
         RestVerticle restVerticle = new RestVerticle();

@@ -5,6 +5,7 @@ import de.tetris.controller.gui.MainController;
 import de.tetris.controller.interfaces.IGameController;
 import de.tetris.model.*;
 import de.tetris.model.block.*;
+import de.tetris.utils.MessageEventUtils;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
@@ -66,6 +67,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
             collisionHandling();
             currentBlock.moveDown(MainController.CELL_HEIGHT);
             lastTime = now;
+            MessageEventUtils.getInstance().sendDataToWebSocket(scope.getFieldAsColorCells());
         }
     }
 

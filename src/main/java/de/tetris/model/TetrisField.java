@@ -1,9 +1,11 @@
 package de.tetris.model;
 
 import de.tetris.model.block.Block;
+import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -187,4 +189,26 @@ public class TetrisField {
         return str;
     }
 
+    public List<List<String>> getFieldAsColorCells() {
+        List<List<String>> coloredField = new LinkedList<>();
+        for (List<Cell> row: fieldData) {
+            List<String> coloredRow = new LinkedList<>();
+            for (Cell cell: row) {
+                if (cell.isFilled()) {
+                    coloredRow.add(colorToHtmlHex(cell.getColor()));
+                } else {
+                    coloredRow.add("#000000");
+                }
+            }
+            coloredField.add(coloredRow);
+        }
+        return coloredField;
+    }
+
+    private String colorToHtmlHex(Color color) {
+        int red = (int) color.getRed() * 255;
+        int green = (int) color.getGreen() * 255;
+        int blue = (int) color.getBlue() * 255;
+        return "#" + String.format("%02X", red) + String.format("%02X", green) + String.format("%02X", blue);
+    }
 }
