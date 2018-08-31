@@ -2,12 +2,18 @@ Tetris FX
 =========
 A tetris clone written in JavaFx.
 
-The number of columns and rows does not correspond to the original Tetris.
+The number of columns and rows do not correspond to the original Tetris.
 
 #### Requirements
 
 * Java 8 JDK or higher
 * Maven 3
+
+#### Build application with maven
+
+```console
+mvn clean install
+```
 
 #### Run Application
 
@@ -64,7 +70,7 @@ And register your handler with following address
 
 Future work
 ======
--
+...
 
 License
 =======
