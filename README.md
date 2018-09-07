@@ -65,12 +65,13 @@ Following commands are available
 | 8   |  Stop game   |
 ---
 
-Handling data field with SockJs
+Handling field & block data with SockJs
 ======
-Create your SockJS eventbus on the client side with following path 
+
+Create your SockJS eventbus on the client side with the following path 
 * `yourTetrisFxAppIp:3000/api/eventbus`
 
-Addresses
+#### Addresses
 
 Field data model
 
