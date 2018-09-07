@@ -25,43 +25,53 @@ public class UiMenuAnimation {
         menuStartAnimation.setCycleCount(Timeline.INDEFINITE);
 
         final Text pressSpace = new Text("- Press Space -");
-        final Text control = new Text("CTRL ALT LEFT DOWN RIGHT");
+        final Text control = new Text("Ctrl Alt");
+        final Text arrow = new Text("Left Down Right");
         final Text about = new Text("A: About");
 
-        final Font spaceFont = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), 14);
-        final Font defaultFont = new Font(18);
+        final Font spaceFont = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), 25);
+        final Font keymapFont = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), 20);
 
         pressSpace.setFont(spaceFont);
-        control.setFont(defaultFont);
-        about.setFont(defaultFont);
+        control.setFont(keymapFont);
+        about.setFont(keymapFont);
+        arrow.setFont(keymapFont);
+
+        final double spaceStrX = (scopeWidth - pressSpace.getBoundsInLocal().getWidth()) / 2;
+        // TODO Richtige mathematische Höhenrechnung ?
+        final double spaceStrY = scopeHeight / 2;
 
         final double controlStrX = (scopeWidth - control.getBoundsInLocal().getWidth()) / 2;
         // TODO Richtige mathematische Höhenrechnung ?
-        final double controlStrY = (scopeHeight / 2) + (2 * MainController.CELL_HEIGHT);
+        final double controlStrY = spaceStrY + (2 * MainController.CELL_HEIGHT);
+
+        final double keyarrowStrX = (scopeWidth - arrow.getBoundsInLocal().getWidth()) / 2;
+        // TODO Richtige mathematische Höhenrechnung ?
+        final double keyarrowStrY = controlStrY + (2 * MainController.CELL_HEIGHT);
 
         final double aboutStrX = (scopeWidth - about.getBoundsInLocal().getWidth()) / 2;
-        final double aboutStrY = controlStrY + (2 * MainController.CELL_HEIGHT);
+        // TODO Richtige mathematische Höhenrechnung ?
+        final double aboutStrY = keyarrowStrY + (2 * MainController.CELL_HEIGHT);
 
         menuStartAnimation.getKeyFrames().add(
                 new KeyFrame(Duration.millis(400), actionEvent -> {
                     graphicsContext.setFill(Color.GREEN);
                     graphicsContext.setFont(spaceFont);
-                    graphicsContext.fillText(pressSpace.getText(),
-                            (scopeWidth - pressSpace.getBoundsInLocal().getWidth()) / 2, scopeHeight / 2);
+                    graphicsContext.fillText(pressSpace.getText(), spaceStrX, spaceStrY);
                     graphicsContext.setFill(Color.BLUE);
 
-                    graphicsContext.setFont(defaultFont);
+                    graphicsContext.setFont(keymapFont);
                     graphicsContext.fillText(control.getText(), controlStrX, controlStrY);
-                    // TODO Richtige mathematische Höhenrechnung ?
+                    graphicsContext.fillText(arrow.getText(), keyarrowStrX, keyarrowStrY);
                     graphicsContext.fillText(about.getText(), aboutStrX, aboutStrY);
                 }, new KeyValue[0]) // don't use binding
         );
         menuStartAnimation.getKeyFrames().add(
                 new KeyFrame(Duration.millis(800), actionEvent -> {
                     graphicsContext.clearRect(0, 0, scopeWidth, scopeHeight);
-                    graphicsContext.setFont(defaultFont);
+                    graphicsContext.setFont(keymapFont);
                     graphicsContext.fillText(control.getText(), controlStrX, controlStrY);
-                    // TODO Richtige mathematische Höhenrechnung ?
+                    graphicsContext.fillText(arrow.getText(), keyarrowStrX, keyarrowStrY);
                     graphicsContext.fillText(about.getText(), aboutStrX, aboutStrY);
                 }, new KeyValue[0]) // don't use binding);
         );
@@ -70,7 +80,7 @@ public class UiMenuAnimation {
     public void createPauseAnimation(GraphicsContext graphicsContext, double scopeWidth, double scopeHeight) {
         pauseAnimation = new Timeline();
         final Text pause = new Text("- Paused Game -");
-        final Font pauseFont = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), 14);
+        final Font pauseFont = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), 20);
         pause.setFont(pauseFont);
 
         final double xpos = (scopeWidth - pause.getBoundsInLocal().getWidth()) / 2;

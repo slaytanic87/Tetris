@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,6 +18,7 @@ public class TetrisField {
 
     private static final int SPEEDSTEPINMILLIS = 40;
     public static long INITIAL_LOWEST_SPEED_IN_MILLI;
+    private LinkedBlockingQueue<Block> queue;
 
     public static int COLS = 0;
     public static int ROWS = 0;
@@ -51,6 +53,14 @@ public class TetrisField {
         return (newSpeed < 0) ? 0 : newSpeed;
     }
 
+    public LinkedBlockingQueue<Block> getQueue() {
+        return this.queue;
+    }
+
+    public void setQueue(LinkedBlockingQueue<Block> queue) {
+        this.queue = queue;
+    }
+
     public void addEmptyRow() {
         ArrayList<Cell> row = new ArrayList<>(COLS);
         for (int i = 0; i < COLS; i++) {
@@ -72,7 +82,7 @@ public class TetrisField {
     }
 
 
-    public CollisionType detectFutureCollision(Block block) {
+    public CollisionType detectCollisionInAdvance(Block block) {
         int[][] blockData = block.getData();
         GridPosition blockPosTopLeft = new GridPosition(block.getGridposition().getPosX(),
                 block.getGridposition().getPosY() + 1);

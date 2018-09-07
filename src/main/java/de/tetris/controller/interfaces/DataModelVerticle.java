@@ -4,6 +4,7 @@ import de.tetris.model.GameState;
 import de.tetris.model.Scores;
 import de.tetris.model.TetrisField;
 import de.tetris.model.rest.ErrorCode;
+import de.tetris.model.rest.Response;
 import io.vertx.core.json.EncodeException;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DataModelVerticle extends AbstractVerticle {
 
     public static final String EVENT_GET_FIELD = "event.field";
+    public static final String EVENT_GET_BLOCK_QUEUE = "event.queueblock";
     public static final String EVENT_GET_GAME_PROGRESS_STATE = "event.gameState";
     public static final String EVENT_GET_GAME_SPEED = "event.gameSpeed";
     public static final String EVENT_GET_GAME_LEVEL = "event.gameLevel";
@@ -36,6 +38,18 @@ public class DataModelVerticle extends AbstractVerticle {
         vertx.eventBus().consumer(EVENT_GET_GAME_SPEED, this::handleGameSpeed);
         vertx.eventBus().consumer(EVENT_GET_GAME_LEVEL, this::handleGameLevel);
         vertx.eventBus().consumer(EVENT_GET_FINISHED_ROWS, this::handleFinishedRows);
+        vertx.eventBus().consumer(EVENT_GET_BLOCK_QUEUE, this::handleBlockQueue);
+    }
+
+    private void handleBlockQueue(Message<String> message) {
+        Response response = new Response();
+        if (!GameState.getInstance().isStopped() && !GameState.getInstance().isPaused()) {
+            message.reply(Json.encode(model.getQueue().toArray()));
+        } else {
+            response.setCode(ErrorCode.NOK);
+            response.setMessage("Game not started");
+            message.reply(Json.encode(response));
+        }
     }
 
     private void handleFinishedRows(Message<String> message) {

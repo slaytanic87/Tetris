@@ -8,14 +8,14 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="291.0" prefWidth="508.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.tetris.controller.gui.InfodialogController">
    <top>
-      <Pane prefHeight="133.0" prefWidth="508.0" style="-fx-background-color: #E2E2E2;" BorderPane.alignment="CENTER">
+      <Pane prefHeight="133.0" prefWidth="508.0" style="-fx-background-color: #ff6d00;" BorderPane.alignment="CENTER">
          <children>
             <ImageView fitHeight="90.0" fitWidth="103.0" layoutX="402.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@images/info_icon.png" />
                </image>
             </ImageView>
-            <Label layoutX="110.0" layoutY="15.0" prefHeight="105.0" prefWidth="261.0" text="Tetris Fx">
+            <Label layoutX="110.0" layoutY="15.0" prefHeight="105.0" prefWidth="261.0" text="Tetris Fx" textFill="#f7e30c">
                <font>
                   <Font name="Arial Rounded MT Bold" size="56.0" />
                </font>
@@ -24,14 +24,14 @@
       </Pane>
    </top>
    <center>
-      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffdca3;" BorderPane.alignment="CENTER">
          <children>
             <Label layoutX="21.0" layoutY="14.0" text="Tetris Fx 0.5">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
             </Label>
-            <Button layoutX="419.0" layoutY="107.0" mnemonicParsing="false" onAction="#closeDialog" style="-fx-background-color: #000000;" text="Close" textFill="#f2efef" />
+            <Button layoutX="419.0" layoutY="107.0" mnemonicParsing="false" onAction="#closeDialog" style="-fx-background-color: #0002a7;" text="Close" textFill="#f2efef" />
             <Label layoutX="21.0" layoutY="126.0" text="© 2017 Lam" />
             <Label layoutX="21.0" layoutY="41.0" text="This is a free to distribute Software" />
             <Label layoutX="21.0" layoutY="69.0" text="Tetris and its logo is a trademark of The Tetris Company, LLC">

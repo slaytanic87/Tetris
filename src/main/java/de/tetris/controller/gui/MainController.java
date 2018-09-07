@@ -59,7 +59,7 @@ public class MainController implements Initializable {
     private CathedralAnimation cathedralAnimation;
 
     private Font globalFont;
-    public static final String FONT_PATH = "/fxml/fonts/dancefloor.ttf";
+    public static final String FONT_PATH = "/fxml/fonts/PinballChallenge.ttf";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,7 +67,7 @@ public class MainController implements Initializable {
         blockQueueViewContext = blockView.getGraphicsContext2D();
         scoreViewContext = scoreView.getGraphicsContext2D();
 
-        globalFont = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), -1);
+        globalFont = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), 20);
         scoreViewContext.setFont(globalFont);
         
         animation = new UiMenuAnimation();

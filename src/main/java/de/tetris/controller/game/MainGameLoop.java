@@ -27,8 +27,6 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
 
     private static final int MAX_QEUESIZE = 8;
 
-    private LinkedBlockingQueue<Block> queue;
-
     private Block currentBlock;
 
     private double durationTime;
@@ -38,7 +36,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     private GameState gameState = GameState.getInstance();
 
     public MainGameLoop(TetrisField scope) {
-        queue = new LinkedBlockingQueue<>();
+        scope.setQueue(new LinkedBlockingQueue<>());
         this.scope = scope;
         currentBlock = generateBlock();
         generateBlocks(MAX_QEUESIZE);
@@ -67,28 +65,29 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
             collisionHandling();
             currentBlock.moveDown(MainController.CELL_HEIGHT);
             lastTime = now;
-            MessageEventUtils.getInstance().sendDataToWebSocket(scope.getFieldAsColorCells());
+            MessageEventUtils.getInstance().sendBlockToWebSocketBus(currentBlock);
         }
     }
 
     private void collisionHandling() {
-        CollisionType collisionType = scope.detectFutureCollision(currentBlock);
+        CollisionType collisionType = scope.detectCollisionInAdvance(currentBlock);
         switch (collisionType) {
             case GROUND_BELOW:
             case BLOCK_BELOW:
                 scope.placeBlock(currentBlock);
                 try {
-                    currentBlock = queue.take();
+                    currentBlock = scope.getQueue().take();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                queue.add(generateBlock());
+                scope.getQueue().add(generateBlock());
                 int processedRows = scope.processFilledRows();
                 Scores.getInstance().addFinishRows(processedRows);
                 Scores.getInstance().addScore(processedRows);
                 if (processedRows > 0) {
                     GlobalController.getMainController().drawFadeInScore(processedRows);
                 }
+                MessageEventUtils.getInstance().sendDataToWebSocketBus(scope.getFieldAsColorCells());
                 log.debug("Current duration time: {} ns", durationTime);
                 durationTime = scope.calcSpeed();
                 log.debug("New duration time: {} ns", durationTime);
@@ -107,7 +106,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
         for (int i = 0; i < number; i++) {
             Block block = generateBlock();
             log.debug("generate: {}", block.getClass().getSimpleName());
-            queue.add(block);
+            scope.getQueue().add(block);
         }
     }
 
@@ -122,7 +121,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
         final int VIEWCOLS = 2;
         final int VIEWROWS = 4;
 
-        Block[] blocks = queue.toArray(new Block[queue.size()]);
+        Block[] blocks = scope.getQueue().toArray(new Block[scope.getQueue().size()]);
         GlobalController.getMainController().refreshBlockViewCanvas();
         GlobalController.getMainController().drawBlockViewGrid(blocks.length / VIEWCOLS);
         drawScore();
@@ -237,7 +236,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
 
     private void initGame() {
         scope.resetModel();
-        queue.clear();
+        scope.getQueue().clear();
         Scores.getInstance().resetScores();
         currentBlock = generateBlock();
         generateBlocks(MAX_QEUESIZE);

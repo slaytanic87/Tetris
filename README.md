@@ -18,7 +18,7 @@ mvn clean install
 #### Run Application
 
 ```console
-java -jar tetris-1.0-SNAPSHOT-fat.jar
+java -jar tetris-1.0-SNAPSHOT-uber.jar
 ```
 
 ![Screenshot](screenshot.png)
@@ -65,8 +65,15 @@ Handling data field with SockJs
 Create your SockJS eventbus on the client side with following path 
 * `yourTetrisFxAppIp:3000/api/eventbus`
 
-And register your handler with following address 
+Addresses
+
+Field data model
+
 * `event.websocket.fielddata`
+
+Current moving block
+
+* `event.websocket.block`
 
 Future work
 ======

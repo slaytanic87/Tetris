@@ -45,7 +45,7 @@ public class TestFieldWithBlock {
         Block block = new Lblock(Color.MAGENTA);
         block.setTopLeft(new Point2D(middleCol, DEFAULT_ROWS - 1));
         block.setGridposition(new GridPosition(middleCol, 38));
-        CollisionType ctype = scope.detectFutureCollision(block);
+        CollisionType ctype = scope.detectCollisionInAdvance(block);
         assertEquals(CollisionType.GROUND_BELOW, ctype);
     }
 

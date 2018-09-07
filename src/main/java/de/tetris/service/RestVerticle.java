@@ -69,6 +69,7 @@ public class RestVerticle extends AbstractVerticle {
         apiRouter.get("/speed").handler(this::handleGameSpeed);
         apiRouter.get("/level").handler(this::handleGameLevel);
         apiRouter.get("/finishedrows").handler(this::handleProcessedRows);
+        apiRouter.get("/waitingblocks").handler(this::handleQueueBlock);
         apiRouter.post("/turn/").handler(this::handleGameController);
 
         final HttpServerOptions options = new HttpServerOptions().setCompressionSupported(true);
@@ -87,28 +88,33 @@ public class RestVerticle extends AbstractVerticle {
                         });
     }
 
+    private void handleQueueBlock(RoutingContext routingContext) {
+        vertx.eventBus().send(DataModelVerticle.EVENT_GET_BLOCK_QUEUE, null,
+                createResponseHandler(routingContext));
+    }
+
     private void handleProcessedRows(RoutingContext routingContext) {
         vertx.eventBus().send(DataModelVerticle.EVENT_GET_FINISHED_ROWS, null,
-                getDefaultStringHandler(routingContext));
+                createResponseHandler(routingContext));
     }
 
     private void handleGameLevel(RoutingContext routingContext) {
         vertx.eventBus().send(DataModelVerticle.EVENT_GET_GAME_LEVEL, null,
-                getDefaultStringHandler(routingContext));
+                createResponseHandler(routingContext));
     }
 
     private void handleGameSpeed(RoutingContext routingContext) {
         vertx.eventBus().send(DataModelVerticle.EVENT_GET_GAME_SPEED, null,
-                getDefaultStringHandler(routingContext));
+                createResponseHandler(routingContext));
     }
 
     private void handleGamestate(RoutingContext routingContext) {
         vertx.eventBus().send(DataModelVerticle.EVENT_GET_GAME_PROGRESS_STATE, null,
-                getDefaultStringHandler(routingContext));
+                createResponseHandler(routingContext));
     }
 
     private void handleField(RoutingContext routingContext) {
-        vertx.eventBus().send(DataModelVerticle.EVENT_GET_FIELD, null, getDefaultStringHandler(routingContext));
+        vertx.eventBus().send(DataModelVerticle.EVENT_GET_FIELD, null, createResponseHandler(routingContext));
     }
 
 
@@ -118,35 +124,35 @@ public class RestVerticle extends AbstractVerticle {
         switch (cmd.getCmd()) {
             case 1:
                 vertx.eventBus().send(GameInputBusEventVerticle.EVENT_LEFT, null,
-                        getDefaultStringHandler(routingContext));
+                        createResponseHandler(routingContext));
                 break;
             case 2:
                 vertx.eventBus().send(GameInputBusEventVerticle.EVENT_RIGHT, null,
-                        getDefaultStringHandler(routingContext));
+                        createResponseHandler(routingContext));
                 break;
             case 3:
                 vertx.eventBus().send(GameInputBusEventVerticle.EVENT_DOWN, null,
-                        getDefaultStringHandler(routingContext));
+                        createResponseHandler(routingContext));
                 break;
             case 4:
                 vertx.eventBus().send(GameInputBusEventVerticle.EVENT_ROTATE_LEFT, null,
-                        getDefaultStringHandler(routingContext));
+                        createResponseHandler(routingContext));
                 break;
             case 5:
                 vertx.eventBus().send(GameInputBusEventVerticle.EVENT_ROTATE_RIGHT, null,
-                        getDefaultStringHandler(routingContext));
+                        createResponseHandler(routingContext));
                 break;
             case 6:
                 vertx.eventBus().send(GameInputBusEventVerticle.EVENT_START, null,
-                        getDefaultStringHandler(routingContext));
+                        createResponseHandler(routingContext));
                 break;
             case 7:
                 vertx.eventBus().send(GameInputBusEventVerticle.EVENT_PAUSE, null,
-                        getDefaultStringHandler(routingContext));
+                        createResponseHandler(routingContext));
                 break;
             case 8:
                 vertx.eventBus().send(GameInputBusEventVerticle.EVENT_STOP, null,
-                        getDefaultStringHandler(routingContext));
+                        createResponseHandler(routingContext));
                 break;
             default:
                 Response response = new Response();
@@ -158,7 +164,7 @@ public class RestVerticle extends AbstractVerticle {
         }
     }
 
-    private Handler<AsyncResult<Message<String>>> getDefaultStringHandler(RoutingContext routingContext) {
+    private Handler<AsyncResult<Message<String>>> createResponseHandler(RoutingContext routingContext) {
         return event -> {
             if (event.succeeded()) {
                 routingContext.response().putHeader("content-type", APPLICATION_JSON)

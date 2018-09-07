@@ -34,12 +34,10 @@ import java.util.Properties;
 @Slf4j
 public class MainApp extends Application {
 
-    private Scene scene;
-    private MainGameLoop gameLoop;
     private volatile TetrisField field;
 
-    public final static int DEFAULT_NUMBER_OF_COLS = 20;
-    public final static int DEFAULT_NUMBER_OF_ROWS = 40;
+    private final static int DEFAULT_NUMBER_OF_COLS = 20;
+    private final static int DEFAULT_NUMBER_OF_ROWS = 40;
     private final static int GAME_DURATION_MILLIS = 500;
 
     private Vertx vertx;
@@ -62,8 +60,8 @@ public class MainApp extends Application {
         MessageEventUtils.getInstance().setEventBus(vertx.eventBus());
 
         field = new TetrisField(DEFAULT_NUMBER_OF_COLS, DEFAULT_NUMBER_OF_ROWS);
-        gameLoop = new MainGameLoop(field);
-        scene = new Scene(root);
+        MainGameLoop gameLoop = new MainGameLoop(field);
+        Scene scene = new Scene(root);
 
         scene.addEventHandler(KeyEvent.ANY, new GameKeyEvent(gameLoop));
         //primaryStage.initStyle(StageStyle.UNDECORATED);
