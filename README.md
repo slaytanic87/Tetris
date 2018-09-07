@@ -15,6 +15,11 @@ The number of columns and rows model does not correspond to the original Tetris.
 mvn clean install
 ```
 
+#### Binary file
+
+For the latest binary file take a look on the release section
+
+
 #### Run Application
 
 ```console
