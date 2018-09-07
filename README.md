@@ -17,7 +17,7 @@ mvn clean install
 
 #### Binary file
 
-For the latest binary file take a look on the release section
+For the latest binary file take a look at the release section
 
 
 #### Run Application
