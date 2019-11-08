@@ -1,6 +1,6 @@
 = Todo Tetris
 
-== Version 0.1
+== Version 1.2
 
 === Block-Rotierung am rechten Rand
 
