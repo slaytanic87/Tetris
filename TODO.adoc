@@ -81,7 +81,7 @@ Animation der Tiles mit AnimationTimer.
 
 Lokale Eventbus Verbindung implementieren, um später unterschiedliche Steuerungsmöglichkeiten zu ermöglichen. (bsp. Rest)
 
-* IN PROGRESS
+* DONE
 
 === Info Window
 

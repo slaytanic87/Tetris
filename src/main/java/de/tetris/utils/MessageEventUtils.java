@@ -1,8 +1,11 @@
 package de.tetris.utils;
 
 import de.tetris.model.block.Block;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 import io.vertx.core.json.Json;
 import io.vertx.rxjava.core.eventbus.EventBus;
+import io.vertx.rxjava.core.eventbus.Message;
 
 import java.util.List;
 
@@ -35,6 +38,16 @@ public class MessageEventUtils {
 
     public void sendBlockToWebSocketBus(Block block) {
         eventBus.publish(WEBSOCKET_EVENT_CURRENT_BLOCK, Json.encode(block));
+    }
+
+    public <T> void sendDataToVertexBus(String addr, T data, Handler<AsyncResult<Message<String>>> handler) {
+        String jsonEncoded = (data == null) ? null : Json.encode(data);
+        eventBus.send(addr, jsonEncoded, handler);
+    }
+
+    public <T> void sendDataToVertexBus(String addr, T data) {
+        String jsonEncoded = (data == null) ? null : Json.encode(data);
+        eventBus.send(addr, jsonEncoded);
     }
 
     public void setEventBus(EventBus eventBus) {

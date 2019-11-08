@@ -1,10 +1,11 @@
 package de.tetris;
 
 import de.tetris.controller.game.MainGameLoop;
-import de.tetris.controller.gui.GlobalController;
+import de.tetris.controller.gui.ControllerContext;
 import de.tetris.controller.gui.MainController;
-import de.tetris.controller.interfaces.DataModelVerticle;
-import de.tetris.controller.interfaces.GameInputBusEventVerticle;
+import de.tetris.service.DataModelVerticle;
+import de.tetris.service.EvaluationVerticle;
+import de.tetris.service.GameInputBusEventVerticle;
 import de.tetris.controller.interfaces.GameKeyEvent;
 import de.tetris.model.TetrisField;
 import de.tetris.service.RestVerticle;
@@ -39,7 +40,7 @@ public class MainApp extends Application {
     private final static int DEFAULT_NUMBER_OF_COLS = 20;
     private final static int DEFAULT_NUMBER_OF_ROWS = 40;
     private final static int GAME_DURATION_MILLIS = 500;
-
+    private Properties applicationProperties;
     private Vertx vertx;
 
     @Override
@@ -48,8 +49,8 @@ public class MainApp extends Application {
         Parent root = loader.load();
         MainController controller = loader.getController();
         controller.calcCellSize(DEFAULT_NUMBER_OF_COLS, DEFAULT_NUMBER_OF_ROWS);
-        GlobalController.setMainController(controller);
-
+        ControllerContext.setMainController(controller);
+        loadProperties();
         vertx = Vertx.vertx(new VertxOptions().setMetricsOptions(
                 new DropwizardMetricsOptions()
                         .setRegistryName("vertx")
@@ -75,24 +76,25 @@ public class MainApp extends Application {
 
         gameLoop.setDuration(Duration.millis(GAME_DURATION_MILLIS));
 
-
         GameInputBusEventVerticle gameInputBusVerticle = new GameInputBusEventVerticle(gameLoop);
         DataModelVerticle dataModelVerticle = new DataModelVerticle(field);
-        RestVerticle restVerticle = new RestVerticle();
+        RestVerticle restVerticle = new RestVerticle(Integer.valueOf(applicationProperties.getProperty("port")));
+        EvaluationVerticle evaluationVerticle = new EvaluationVerticle();
 
-        ((io.vertx.core.Vertx) vertx.getDelegate()).deployVerticle(dataModelVerticle);
-        ((io.vertx.core.Vertx) vertx.getDelegate()).deployVerticle(gameInputBusVerticle);
-        ((io.vertx.core.Vertx) vertx.getDelegate()).deployVerticle(restVerticle);
+        vertx.getDelegate().deployVerticle(dataModelVerticle);
+        vertx.getDelegate().deployVerticle(gameInputBusVerticle);
+        vertx.getDelegate().deployVerticle(restVerticle);
+        vertx.getDelegate().deployVerticle(evaluationVerticle);
 
         primaryStage.show();
     }
 
     private void loadProperties() {
-        Properties applicationProperties = new Properties();
+        applicationProperties = new Properties();
         try {
             applicationProperties.load(this.getClass().getResourceAsStream("/application.properties"));
         } catch (IOException e) {
-            throw new RuntimeException("unable to read application.properties included in file");
+            throw new RuntimeException("unable to read application.properties included in the file");
         }
     }
 

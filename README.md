@@ -6,7 +6,11 @@ The number of columns and rows model does not correspond to the original Tetris.
 
 #### Requirements
 
-* Java 8 JDK or higher
+* Java 11 JRE or higher
+* JavaFx SDK from Openjfx.io (https://gluonhq.com/products/javafx/)
+
+#### Build Tool
+
 * Maven 3
 
 #### Build application with maven
@@ -22,8 +26,10 @@ For the latest binary file take a look at the release section
 
 #### Run Application
 
+since java 11
+
 ```console
-java -jar tetris-1.0-SNAPSHOT-uber.jar
+java --module-path "path\to\javafx-sdk-XX.X.X\lib" --add-modules javafx.controls,javafx.fxml  -jar tetrisFx-X.X-SNAPSHOT-uber.jar
 ```
 
 ![Screenshot](screenshot.png)
@@ -32,7 +38,7 @@ java -jar tetris-1.0-SNAPSHOT-uber.jar
 
 Rest Service
 ======
-You can also control the game over the rest api under localhost:3000/api
+You can also control the game or access the model over the rest api under localhost:3000/api
 
 | Request type   |      Path       | Body/Param |Description |
 | ------------- | ---------------- | ---------- | ---------- |
@@ -42,8 +48,10 @@ You can also control the game over the rest api under localhost:3000/api
 | GET           |  `/level`        | None       | Get the current level |
 | GET           |  `/finishedrows` | None       | Get processed rows    |
 | POST          |  `/turn`         | see (1)    | control the tetris blocks |
-
+| GET           |  `/bricklevel`   | None       | Get the information vector about how tall the wall was build |
+| GET           |  `/blockdisplacement` | None  | Get the displacement information vector about how much empty space does the block need below |
 ---
+
 (1)
 ```javascript
 {

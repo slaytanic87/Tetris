@@ -29,6 +29,7 @@ public class Oblock extends Block {
         super.topLeft = new Point2D(colmiddle * MainController.CELL_WIDTH, 0);
         super.blockHeight = data.length;
         super.blockWidth = data[0].length;
+        super.calcDisplacement(data);
     }
 
     public void rotateLeft() {
@@ -82,14 +83,33 @@ public class Oblock extends Block {
     }
 
     @Override
+    public BlockType getBlockType() {
+        return BlockType.O;
+    }
+
+    @Override
+    public Block clone() {
+        Color tmp = getColor();
+        Oblock oblock = new Oblock(new Color(tmp.getRed(), tmp.getGreen(), tmp.getBlue(), 1.0));
+        oblock.setData(deepGridDataCopy(getData()));
+        oblock.setGridposition(super.getGridposition().clone());
+        Point2D topLeftTmp = super.getTopLeft();
+        oblock.setTopLeft(new Point2D(topLeftTmp.getX(), topLeftTmp.getY()));
+        oblock.setBlockHeight(getBlockHeight());
+        oblock.setBlockWidth(getBlockWidth());
+        oblock.setBlockDisplacementVec(deepArrayCopy(super.getBlockDisplacementVec()));
+        return oblock;
+    }
+
+    @Override
     public String toString() {
-        String str = "\n";
-        for (int i = 0; i < data.length; i++) {
+        StringBuilder str = new StringBuilder("\n");
+        for (int[] datum : data) {
             for (int j = 0; j < data[0].length; j++) {
-                str += data[i][j] + "|";
+                str.append(datum[j]).append("|");
             }
-            str += "\n";
+            str.append("\n");
         }
-        return str;
+        return str.toString();
     }
 }

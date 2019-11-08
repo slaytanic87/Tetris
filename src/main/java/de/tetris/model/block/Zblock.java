@@ -27,7 +27,9 @@ public class Zblock extends Block {
         super.position = new GridPosition(colmiddle, 0);
         super.topLeft = new Point2D(colmiddle * MainController.CELL_WIDTH, 0);
         super.blockHeight = data.length;
-        super.blockWidth = data[0].length;    }
+        super.blockWidth = data[0].length;
+        super.calcDisplacement(data);
+    }
 
     public void rotateLeft() {
         data = super.tiltLeft(data);
@@ -78,14 +80,33 @@ public class Zblock extends Block {
     }
 
     @Override
+    public BlockType getBlockType() {
+        return BlockType.Z;
+    }
+
+    @Override
+    public Block clone() {
+        Color tmp = getColor();
+        Zblock zblock = new Zblock(new Color(tmp.getRed(), tmp.getGreen(), tmp.getBlue(), 1.0));
+        zblock.setData(deepGridDataCopy(getData()));
+        zblock.setGridposition(super.getGridposition().clone());
+        Point2D topLeftTmp = super.getTopLeft();
+        zblock.setTopLeft(new Point2D(topLeftTmp.getX(), topLeftTmp.getY()));
+        zblock.setBlockHeight(getBlockHeight());
+        zblock.setBlockWidth(getBlockWidth());
+        zblock.setBlockDisplacementVec(deepArrayCopy(super.getBlockDisplacementVec()));
+        return zblock;
+    }
+
+    @Override
     public String toString() {
-        String str = "\n";
-        for (int i = 0; i < data.length; i++) {
+        StringBuilder str = new StringBuilder("\n");
+        for (int[] datum : data) {
             for (int j = 0; j < data[0].length; j++) {
-                str += data[i][j] + "|";
+                str.append(datum[j]).append("|");
             }
-            str += "\n";
+            str.append("\n");
         }
-        return str;
+        return str.toString();
     }
 }

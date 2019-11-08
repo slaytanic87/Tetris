@@ -1,4 +1,4 @@
-package de.tetris.controller.interfaces;
+package de.tetris.service;
 
 import de.tetris.model.GameState;
 import de.tetris.model.Scores;
@@ -24,6 +24,8 @@ public class DataModelVerticle extends AbstractVerticle {
     public static final String EVENT_GET_GAME_SPEED = "event.gameSpeed";
     public static final String EVENT_GET_GAME_LEVEL = "event.gameLevel";
     public static final String EVENT_GET_FINISHED_ROWS = "event.finishedRows";
+    public static final String EVENT_GET_BRICK_LEVEL = "event.brickLevelVec";
+    public static final String EVENT_GET_BLOCK_DISPLACEMENT = "event.blockDisplacementVec";
 
     private TetrisField model;
 
@@ -39,6 +41,8 @@ public class DataModelVerticle extends AbstractVerticle {
         vertx.eventBus().consumer(EVENT_GET_GAME_LEVEL, this::handleGameLevel);
         vertx.eventBus().consumer(EVENT_GET_FINISHED_ROWS, this::handleFinishedRows);
         vertx.eventBus().consumer(EVENT_GET_BLOCK_QUEUE, this::handleBlockQueue);
+        vertx.eventBus().consumer(EVENT_GET_BRICK_LEVEL, this::handleGetBrickLevel);
+        vertx.eventBus().consumer(EVENT_GET_BLOCK_DISPLACEMENT, this::handleGetBlockDisplacement);
     }
 
     private void handleBlockQueue(Message<String> message) {
@@ -79,5 +83,14 @@ public class DataModelVerticle extends AbstractVerticle {
 
     private void handleGetProgressState(Message<String> message) {
         message.reply(Json.encode(GameState.getInstance()));
+    }
+
+    private void handleGetBrickLevel(Message<String> message) {
+        message.reply(Json.encode(model.getBrickLevelVec()));
+    }
+
+
+    private void handleGetBlockDisplacement(Message<String> message) {
+        message.reply(Json.encode(model.getCurrentBlock().getBlockDisplacementVec()));
     }
 }

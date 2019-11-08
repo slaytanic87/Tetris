@@ -1,5 +1,6 @@
-package de.tetris.controller.interfaces;
+package de.tetris.service;
 
+import de.tetris.controller.interfaces.IGameController;
 import de.tetris.model.GameState;
 import de.tetris.model.rest.ErrorCode;
 import de.tetris.model.rest.Response;

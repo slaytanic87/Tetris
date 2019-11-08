@@ -18,17 +18,23 @@ public class TetrisField {
 
     private static final int SPEEDSTEPINMILLIS = 40;
     public static long INITIAL_LOWEST_SPEED_IN_MILLI;
+
     private LinkedBlockingQueue<Block> queue;
+
+    private Block currentBlock;
 
     public static int COLS = 0;
     public static int ROWS = 0;
 
     private List<List<Cell>> fieldData = null;
 
+    private int[] brickLevelVec;
+
     public TetrisField(int cols, int rows) {
         COLS = cols;
         ROWS = rows;
         log.debug("Cols: {} Rows: {}", cols, rows);
+        initBrickLevelVec(cols);
         resetModel();
     }
 
@@ -37,6 +43,15 @@ public class TetrisField {
         for (int i = 0; i < ROWS; i++) {
             addEmptyRow();
         }
+        resetBrickLevelVec();
+    }
+
+    public void setCurrentBlock(Block block) {
+        currentBlock = block;
+    }
+
+    public Block getCurrentBlock() {
+        return currentBlock;
     }
 
     public int getNumberCols() {
@@ -86,10 +101,18 @@ public class TetrisField {
         int[][] blockData = block.getData();
         GridPosition blockPosTopLeft = new GridPosition(block.getGridposition().getPosX(),
                 block.getGridposition().getPosY() + 1);
+        return determineCollisionType(blockData, blockPosTopLeft);
+    }
+
+    public CollisionType determineCollision(Block block) {
+        return determineCollisionType(block.getData(), block.getGridposition());
+    }
+
+    private CollisionType determineCollisionType(int[][] blockData, GridPosition blockGridPosTopLeft) {
         for (int row = 0; row < blockData.length; row++) {
             for (int col = 0; col < blockData[row].length; col++) {
-                int currentCol = col + blockPosTopLeft.getPosX();
-                int currentRow = row + blockPosTopLeft.getPosY();
+                int currentCol = col + blockGridPosTopLeft.getPosX();
+                int currentRow = row + blockGridPosTopLeft.getPosY();
                 if (blockData[row][col] == 1) {
                     if (currentRow >= fieldData.size()) {
                         return CollisionType.GROUND_BELOW;
@@ -97,8 +120,18 @@ public class TetrisField {
                     if (fieldData.get(1).get(currentCol).isFilled()) {
                         return CollisionType.BLOCK_OVERFLOW;
                     }
+
+                    if (col == blockData[0].length - 1 && row < blockData.length - 1) {
+                        if (fieldData.get(currentRow).get(currentCol).isFilled()) {
+                            return CollisionType.BLOCK_RIGHT;
+                        }
+                    } else if (col == 0 && row < blockData.length - 1) {
+                        if (fieldData.get(currentRow).get(currentCol).isFilled()) {
+                            return CollisionType.BLOCK_LEFT;
+                        }
+                    }
                     if (fieldData.get(currentRow).get(currentCol).isFilled()) {
-                        log.debug("Block below");
+                        log.debug("Block below current row {} col {}", currentRow, currentCol);
                         return CollisionType.BLOCK_BELOW;
                     }
                 }
@@ -107,14 +140,13 @@ public class TetrisField {
         return CollisionType.NONE;
     }
 
-
     /**
      * Copy block grid data into tetris fieldData grid data.
      * @param block {@link Block}
      */
     public void placeBlock(Block block) {
         int[][] blockdata = block.getData();
-        GridPosition topLeftPos = block.getGridposition();
+        GridPosition topLeftPos = block.getGridposition().clone();
         for (int row = 0; row < blockdata.length; row++) {
             int c = 0;
             for(int col = 0; col < blockdata[row].length; col++) {
@@ -183,6 +215,19 @@ public class TetrisField {
         return processedRows;
     }
 
+    public void decreaseBrickLevelVec(int processedRows) {
+        if (brickLevelVec == null || brickLevelVec.length < COLS) {
+            throw new RuntimeException("brickLevelVec size should equals the number of cols!");
+        }
+        for (int i = 0; i < brickLevelVec.length; i++) {
+            int value = brickLevelVec[i] - processedRows;
+            if (value < 0) {
+                throw new RuntimeException("brickLevel at " + i + " cannot not be less than 0!");
+            }
+            brickLevelVec[i] = value;
+        }
+    }
+
     public List<List<Cell>> getField() {
         return this.fieldData;
     }
@@ -213,6 +258,57 @@ public class TetrisField {
             coloredField.add(coloredRow);
         }
         return coloredField;
+    }
+
+    private void initBrickLevelVec(int numberOfCols) {
+        brickLevelVec = new int[numberOfCols];
+    }
+
+    private void resetBrickLevelVec() {
+        for (short i = 0; i < brickLevelVec.length; i++) {
+            brickLevelVec[i] = 0;
+        }
+    }
+
+    public void updateBrickLevel(Block block) {
+        int colTopLeftX = block.getGridposition().getPosX();
+        int rowTopLeftY = block.getGridposition().getPosY();
+        int[][] data = block.getData();
+        for (short row = 0; row < data.length; row++) {
+            for (int col = 0; col < data[row].length; col++) {
+                if (data[row][col] == 1) {
+                    int currentCol = col + colTopLeftX;
+                    int currentRow = TetrisField.ROWS - (row + rowTopLeftY);
+                    int currentWaterLevelPos = getBrickLevelVecAtPos(currentCol);
+                    if (currentWaterLevelPos < currentRow) {
+                        setBrickLevelVecAtPos(currentCol, currentRow);
+                    }
+                }
+            }
+        }
+    }
+
+    private void setBrickLevelVecAtPos(int index, int value) {
+        checkBrickLevelIndexAndThrow(index);
+        brickLevelVec[index] = value;
+    }
+
+    private int getBrickLevelVecAtPos(int index) {
+        checkBrickLevelIndexAndThrow(index);
+        return brickLevelVec[index];
+    }
+
+    public int[] getBrickLevelVec() {
+        return brickLevelVec;
+    }
+
+    private void checkBrickLevelIndexAndThrow(int index) {
+        if (index > brickLevelVec.length - 1 ) {
+            throw new RuntimeException("Index should be less equal number of columns");
+        }
+        if (index < 0) {
+            throw new RuntimeException("Index should be bigger or equal to 0");
+        }
     }
 
     private String colorToHtmlHex(Color color) {

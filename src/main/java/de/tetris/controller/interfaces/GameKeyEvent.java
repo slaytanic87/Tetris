@@ -1,6 +1,6 @@
 package de.tetris.controller.interfaces;
 
-import de.tetris.controller.gui.GlobalController;
+import de.tetris.controller.gui.ControllerContext;
 import de.tetris.model.GameState;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
@@ -38,7 +38,7 @@ public class GameKeyEvent implements EventHandler<KeyEvent> {
                     break;
                 case A:
                     if (GameState.getInstance().isStopped()) {
-                        GlobalController.loadInfoDialogController();
+                        ControllerContext.loadInfoDialogController();
                     }
                     break;
                 default:

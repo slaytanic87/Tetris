@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Builder
 @Data
-public class GridPosition {
+public class GridPosition implements Cloneable {
     private int posX;
     private int posY;
 
@@ -27,5 +27,9 @@ public class GridPosition {
         posX += dx;
         posY += dy;
         return this;
+    }
+
+    public GridPosition clone() {
+        return new GridPosition(posX, posY);
     }
 }

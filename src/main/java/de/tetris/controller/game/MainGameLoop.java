@@ -1,16 +1,21 @@
 package de.tetris.controller.game;
 
-import de.tetris.controller.gui.GlobalController;
+import com.fasterxml.jackson.core.type.TypeReference;
+import de.tetris.controller.gui.ControllerContext;
 import de.tetris.controller.gui.MainController;
 import de.tetris.controller.interfaces.IGameController;
 import de.tetris.model.*;
 import de.tetris.model.block.*;
+import de.tetris.model.data.Pos;
+import de.tetris.service.EvaluationVerticle;
 import de.tetris.utils.MessageEventUtils;
+import io.vertx.core.json.Json;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.math3.util.Pair;
 
 import java.util.List;
 import java.util.Random;
@@ -27,8 +32,6 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
 
     private static final int MAX_QEUESIZE = 8;
 
-    private Block currentBlock;
-
     private double durationTime;
     private long lastTime;
 
@@ -38,7 +41,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     public MainGameLoop(TetrisField scope) {
         scope.setQueue(new LinkedBlockingQueue<>());
         this.scope = scope;
-        currentBlock = generateBlock();
+        scope.setCurrentBlock(generateBlock());
         generateBlocks(MAX_QEUESIZE);
         drawBlocksFromQueue();
         drawScore();
@@ -63,30 +66,37 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
         if (diff >= durationTime) {
             refreshView();
             collisionHandling();
-            currentBlock.moveDown(MainController.CELL_HEIGHT);
+            scope.getCurrentBlock().moveDown(MainController.CELL_HEIGHT);
             lastTime = now;
-            MessageEventUtils.getInstance().sendBlockToWebSocketBus(currentBlock);
+            MessageEventUtils.getInstance().sendBlockToWebSocketBus(scope.getCurrentBlock());
         }
     }
 
     private void collisionHandling() {
-        CollisionType collisionType = scope.detectCollisionInAdvance(currentBlock);
+        CollisionType collisionType = scope.detectCollisionInAdvance(scope.getCurrentBlock());
         switch (collisionType) {
+            case BLOCK_LEFT:
+            case BLOCK_RIGHT:
             case GROUND_BELOW:
             case BLOCK_BELOW:
-                scope.placeBlock(currentBlock);
+                log.debug("collision type in advance is: {}", collisionType);
+                scope.placeBlock(scope.getCurrentBlock());
+                scope.updateBrickLevel(scope.getCurrentBlock());
                 try {
-                    currentBlock = scope.getQueue().take();
+                    scope.setCurrentBlock(scope.getQueue().take());
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                scope.getQueue().add(generateBlock());
+
                 int processedRows = scope.processFilledRows();
                 Scores.getInstance().addFinishRows(processedRows);
                 Scores.getInstance().addScore(processedRows);
                 if (processedRows > 0) {
-                    GlobalController.getMainController().drawFadeInScore(processedRows);
+                    scope.decreaseBrickLevelVec(processedRows);
+                    ControllerContext.getMainController().drawFadeInScore(processedRows);
                 }
+                sendMetricForEvaluation();
+                scope.getQueue().add(generateBlock());
                 MessageEventUtils.getInstance().sendDataToWebSocketBus(scope.getFieldAsColorCells());
                 log.debug("Current duration time: {} ns", durationTime);
                 durationTime = scope.calcSpeed();
@@ -98,11 +108,48 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
                 break;
             case NONE:
                 break;
-            default: log.debug("Nothing to do with this collisiontype {}", collisionType);
+            default: log.debug("Unknown collision type {}", collisionType);
         }
     }
 
-    public void generateBlocks(int number) {
+    private void sendMetricForEvaluation() {
+        MessageEventUtils.getInstance().sendDataToVertexBus(EvaluationVerticle.EVENT_BLOCK_TYPE,
+                scope.getCurrentBlock().getBlockType());
+        MessageEventUtils.getInstance().sendDataToVertexBus(EvaluationVerticle.EVENT_BLOCK_DISPLACE_VEC,
+                scope.getCurrentBlock().getBlockDisplacementVec());
+        MessageEventUtils.getInstance().sendDataToVertexBus(EvaluationVerticle.EVENT_FIELD_BRICK_LEVEL_VEC,
+                scope.getBrickLevelVec());
+        MessageEventUtils.getInstance().sendDataToVertexBus(EvaluationVerticle.EVENT_CALC_POSITION,
+                scope.getCurrentBlock().getData().length, event -> {
+            if (event.succeeded()) {
+                String optimalPositionsJsonStr = event.result().body();
+                if (optimalPositionsJsonStr != null && !optimalPositionsJsonStr.isEmpty()) {
+                    Pos optimalPosition = Json.decodeValue(optimalPositionsJsonStr, Pos.class );
+                    log.debug("Choosed position: {}", optimalPosition);
+                    Block clonedBlock = scope.getCurrentBlock().clone();
+                    clonedBlock.setColor(new Color(1.0,1.0, 1.0, 0.3));
+                    clonedBlock.setGridposition(new GridPosition(optimalPosition.getPosX(),
+                            optimalPosition.getPosY()));
+
+                    CollisionType collisionType = scope.determineCollision(clonedBlock);
+                    log.debug("Collision type for suggested block {}", collisionType);
+                    if (collisionType.equals(CollisionType.BLOCK_BELOW) || collisionType.equals(CollisionType.BLOCK_RIGHT)
+                    || collisionType.equals(CollisionType.BLOCK_LEFT)) {
+                        log.debug("Suggested position {} collided", clonedBlock.getGridposition());
+                        clonedBlock.getGridposition().setPosY(clonedBlock.getGridposition().getPosY() - 1);
+                    }
+
+                    clonedBlock.setTopLeft(new Point2D(clonedBlock.getGridposition().getPosX() * MainController.CELL_WIDTH,
+                            clonedBlock.getGridposition().getPosY() * MainController.CELL_WIDTH));
+                    gameState.setSuggestedBlockWithPosition(clonedBlock);
+                }
+            } else {
+                log.debug("Could calculate optimal position cause: {}", event.cause().getMessage());
+            }
+        });
+    }
+
+    private void generateBlocks(int number) {
         for (int i = 0; i < number; i++) {
             Block block = generateBlock();
             log.debug("generate: {}", block.getClass().getSimpleName());
@@ -111,24 +158,27 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     }
 
     private void refreshView() {
-        GlobalController.getMainController().clearGameFieldCanvas();
+        ControllerContext.getMainController().clearGameFieldCanvas();
         drawTetrisScope();
-        drawBlock(currentBlock);
+        drawBlock(scope.getCurrentBlock());
+        if (gameState.getSuggestedBlockWithPosition() != null) {
+            drawBlock(gameState.getSuggestedBlockWithPosition());
+        }
     }
 
 
-    protected void drawBlocksFromQueue() {
+    private void drawBlocksFromQueue() {
         final int VIEWCOLS = 2;
         final int VIEWROWS = 4;
 
         Block[] blocks = scope.getQueue().toArray(new Block[scope.getQueue().size()]);
-        GlobalController.getMainController().refreshBlockViewCanvas();
-        GlobalController.getMainController().drawBlockViewGrid(blocks.length / VIEWCOLS);
+        ControllerContext.getMainController().refreshBlockViewCanvas();
+        ControllerContext.getMainController().drawBlockViewGrid(blocks.length / VIEWCOLS);
         drawScore();
 
-        int colWidth = (int) Math.round(GlobalController.getMainController()
+        int colWidth = (int) Math.round(ControllerContext.getMainController()
                 .getBlockViewDimension().getX() / VIEWCOLS);
-        int rowHeight = (int) Math.round(GlobalController.getMainController()
+        int rowHeight = (int) Math.round(ControllerContext.getMainController()
                 .getBlockViewDimension().getY() / VIEWROWS);
 
         int cellWidth = Math.round(colWidth / VIEWROWS);
@@ -151,7 +201,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
             double width = 0;
             for (int col = 0; col < block.getData()[row].length; col++) {
                 if (block.getData()[row][col] == 1) {
-                    GlobalController.getMainController().drawBlockViewRect(pos, block.getColor());
+                    ControllerContext.getMainController().drawBlockViewRect(pos, block.getColor());
                 }
                 pos = pos.add(MainController.CELL_WIDTH, 0);
                 width += MainController.CELL_WIDTH;
@@ -161,18 +211,18 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
         }
     }
 
-    protected void drawTetrisScope() {
+    private void drawTetrisScope() {
         List<List<Cell>> field = scope.getField();
         Point2D pos = new Point2D(0, 0);
         for (List<Cell> row: field) {
             double cols = 0;
             for (Cell cell: row) {
                 if (cell.isFilled()) {
-                    GlobalController.getMainController().drawRectWithContour(pos, cell.getColor());
+                    ControllerContext.getMainController().drawRectWithContour(pos, cell.getColor());
                 }
                 if (gameState.isDebug()) {
                     short value = cell.isFilled() ? (short) 1 : 0;
-                    GlobalController.getMainController().drawDebugRect(pos, Color.GRAY, value,
+                    ControllerContext.getMainController().drawDebugRect(pos, Color.GRAY, value,
                             cell.getColor());
                 }
                 pos = pos.add(MainController.CELL_WIDTH, 0);
@@ -183,14 +233,14 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
         }
     }
 
-    protected void drawBlock(Block block) {
+    private void drawBlock(Block block) {
         int[][] data =  block.getData();
         Point2D point2D = block.getTopLeft();
         for (int i = 0; i < data.length; i++) {
             double colPtr = 0;
             for (int j = 0; j < data[i].length; j++) {
                 if (data[i][j] == 1) {
-                    GlobalController.getMainController().drawRectWithContour(point2D, block.getColor());
+                    ControllerContext.getMainController().drawRectWithContour(point2D, block.getColor());
                 }
                 point2D = point2D.add(MainController.CELL_WIDTH, 0);
                 colPtr += MainController.CELL_WIDTH; // move to right
@@ -200,11 +250,11 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
         }
     }
 
-    protected void drawScore() {
-        GlobalController.getMainController().drawScore();
+    private void drawScore() {
+        ControllerContext.getMainController().drawScore();
     }
 
-    public Block generateBlock() {
+    private Block generateBlock() {
         final double COLORCONST = 0.28;
         final int RANDOM_NUMBER_OF_BLOCKS = 6;
 
@@ -238,8 +288,9 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
         scope.resetModel();
         scope.getQueue().clear();
         Scores.getInstance().resetScores();
-        currentBlock = generateBlock();
+        scope.setCurrentBlock(generateBlock());
         generateBlocks(MAX_QEUESIZE);
+        sendMetricForEvaluation();
         drawBlocksFromQueue();
         drawScore();
         refreshView();
@@ -266,16 +317,16 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     @Override
     public void moveLeft() {
         isButtonHit = true;
-        if (currentBlock.isMoveLeftAllowed(scope.getField())) {
-            currentBlock.moveLeft(MainController.CELL_WIDTH);
+        if (scope.getCurrentBlock().isMoveLeftAllowed(scope.getField())) {
+            scope.getCurrentBlock().moveLeft(MainController.CELL_WIDTH);
         }
     }
 
     @Override
     public void moveRight() {
         isButtonHit = true;
-        if (currentBlock.isMoveRightAllowed(scope.getField())) {
-            currentBlock.moveRight(MainController.CELL_WIDTH);
+        if (scope.getCurrentBlock().isMoveRightAllowed(scope.getField())) {
+            scope.getCurrentBlock().moveRight(MainController.CELL_WIDTH);
         }
     }
 
@@ -283,7 +334,7 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     public void moveDown() {
         isButtonHit = true;
         collisionHandling();
-        currentBlock.moveDown(MainController.CELL_HEIGHT);
+        scope.getCurrentBlock().moveDown(MainController.CELL_HEIGHT);
     }
 
     @Override
@@ -294,16 +345,18 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     @Override
     public void rotateLeft() {
         isButtonHit = true;
-        if (currentBlock.isRotateLeftAllowed(scope.getField())) {
-            currentBlock.rotateLeft();
+        if (scope.getCurrentBlock().isRotateLeftAllowed(scope.getField())) {
+            scope.getCurrentBlock().rotateLeft();
+            sendMetricForEvaluation();
         }
     }
 
     @Override
     public void rotateRight() {
         isButtonHit = true;
-        if (currentBlock.isRotateRightAllowed(scope.getField())) {
-            currentBlock.rotateRight();
+        if (scope.getCurrentBlock().isRotateRightAllowed(scope.getField())) {
+            scope.getCurrentBlock().rotateRight();
+            sendMetricForEvaluation();
         }
     }
 
@@ -323,8 +376,8 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
             gameState.setIsNotStopped();
             gameState.setIsNotFinished();
             initGame();
-            GlobalController.getMainController().startButtonAnimationOff();
-            GlobalController.getMainController().pauseAnimationOff();
+            ControllerContext.getMainController().startButtonAnimationOff();
+            ControllerContext.getMainController().pauseAnimationOff();
             // start main gameloop
             super.start();
         }
@@ -338,9 +391,9 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
         }
         gameState.setIsStopped();
         gameState.setIsFinished();
-        GlobalController.getMainController().clearGameFieldCanvas();
-        GlobalController.getMainController().startButtonAnimationOn();
-        GlobalController.getMainController().pauseAnimationOff();
+        ControllerContext.getMainController().clearGameFieldCanvas();
+        ControllerContext.getMainController().startButtonAnimationOn();
+        ControllerContext.getMainController().pauseAnimationOff();
         this.stop();
         Scores.getInstance().resetScores();
         scope.resetModel();
@@ -351,12 +404,12 @@ public class MainGameLoop extends AnimationTimer implements IGameController {
     public void pause() {
         if (gameState.isPaused()) {
             gameState.setIsNotPaused();
-            GlobalController.getMainController().pauseAnimationOff();
+            ControllerContext.getMainController().pauseAnimationOff();
             super.start();
         } else {
             gameState.setIsPaused();
             super.stop();
-            GlobalController.getMainController().pauseAnimationOn();
+            ControllerContext.getMainController().pauseAnimationOn();
         }
     }
 

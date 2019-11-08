@@ -8,6 +8,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,12 +19,20 @@ public abstract class Block implements Cloneable {
 
     protected Color color;
 
+    /**
+     * Top left graphic coordinate of the block tile
+     */
     protected Point2D topLeft;
 
+    /**
+     * Top left array index position in the game grid
+     */
     protected GridPosition position;
 
     protected int blockWidth;
     protected int blockHeight;
+
+    private int[] displacementVec;
 
     public Block(Color color) {
         this.color = color;
@@ -39,7 +48,10 @@ public abstract class Block implements Cloneable {
                 newdata[i][j] = data[cols - j - 1][i];
             }
         }
+
         correctBlockPosition(newdata);
+        calcDisplacement(newdata);
+
         return newdata;
     }
 
@@ -53,7 +65,10 @@ public abstract class Block implements Cloneable {
                 newdata[i][j] = data[j][rows - i - 1];
             }
         }
+
         correctBlockPosition(newdata);
+        calcDisplacement(newdata);
+
         return newdata;
     }
 
@@ -88,7 +103,6 @@ public abstract class Block implements Cloneable {
     }
 
     protected boolean isNotBehindLeft() {
-        // if the position is greater than 2 Cells
         return (position.getPosX() > 0);
     }
 
@@ -98,8 +112,47 @@ public abstract class Block implements Cloneable {
 
     public abstract int[][] getData();
 
+    public int[] getBlockDisplacementVec() {
+        return displacementVec;
+    }
+
+    public void setBlockDisplacementVec(int[] displacementVec) {
+        this.displacementVec = displacementVec;
+    }
+
+    /**
+     * Calculate the how much empty space does a block need to be well placed.
+     * Example for TBlock:
+     *      ###
+     *       #
+     *
+     * The displacement vector should looks like: [1 0 1]
+     *
+     * @param blockData block indices matrix
+     */
+    protected void calcDisplacement(int[][] blockData) {
+        displacementVec = new int[blockData[0].length];
+        boolean[] blockedColsVec = new boolean[blockData[0].length];
+
+        for (int row = blockData.length - 1; row >= 0; row--) {
+            for (int col = 0; col < blockData[row].length; col++) {
+                if (blockData[row][col] != 1) {
+                    if (!blockedColsVec[col]) {
+                        displacementVec[col]++;
+                    }
+                } else {
+                    blockedColsVec[col] = true;
+                }
+            }
+        }
+    }
+
     public Color getColor() {
         return this.color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public Point2D getTopLeft() {
@@ -135,6 +188,22 @@ public abstract class Block implements Cloneable {
         }
     }
 
+    public void setBlockHeight(int blockHeight) {
+        this.blockHeight = blockHeight;
+    }
+
+    public void setBlockWidth(int blockWidth) {
+        this.blockWidth = blockWidth;
+    }
+
+    protected int[][] deepGridDataCopy(int[][] data) {
+        return Arrays.stream(data).map(el -> el.clone()).toArray($ -> data.clone());
+    }
+
+    protected int[] deepArrayCopy(int[] data) {
+        return Arrays.copyOf(data, data.length);
+    }
+
     public abstract void rotateLeft();
 
     public abstract void rotateRight();
@@ -151,5 +220,7 @@ public abstract class Block implements Cloneable {
 
     public abstract int getBlockHeight();
 
+    public abstract BlockType getBlockType();
 
+    public abstract Block clone();
 }

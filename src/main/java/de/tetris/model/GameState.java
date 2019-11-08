@@ -1,5 +1,6 @@
 package de.tetris.model;
 
+import de.tetris.model.block.Block;
 import lombok.Getter;
 
 /**
@@ -11,6 +12,7 @@ public class GameState {
     private static final Object mutex = new Object();
 
     private static volatile GameState INSTANCE = null;
+    private Block suggestedBlockWithPosition;
 
     private boolean isDebug = false;
     private boolean isPaused = false;
@@ -61,5 +63,9 @@ public class GameState {
 
     public void debugOff() {
         this.isDebug = false;
+    }
+
+    public void setSuggestedBlockWithPosition(Block blockWithPosition) {
+        this.suggestedBlockWithPosition = blockWithPosition;
     }
 }

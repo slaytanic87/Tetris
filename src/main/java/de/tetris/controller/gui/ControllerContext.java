@@ -12,14 +12,14 @@ import java.io.IOException;
 /**
  * @author Lam
  */
-public class GlobalController {
+public class ControllerContext {
 
     private static MainController mainController;
 
     private static InfodialogController infodialogController;
 
     public static void loadInfoDialogController() {
-        FXMLLoader fxmlLoader = new FXMLLoader(GlobalController.class.getResource("/fxml/infodialog.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ControllerContext.class.getResource("/fxml/infodialog.fxml"));
         try {
             Parent root = fxmlLoader.load();
             if (infodialogController == null) {

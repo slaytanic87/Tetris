@@ -1,7 +1,5 @@
 package de.tetris.service;
 
-import de.tetris.controller.interfaces.DataModelVerticle;
-import de.tetris.controller.interfaces.GameInputBusEventVerticle;
 import de.tetris.model.rest.Command;
 import de.tetris.model.rest.ErrorCode;
 import de.tetris.model.rest.Response;
@@ -36,7 +34,15 @@ public class RestVerticle extends AbstractVerticle {
     private static final int INIT_PARSER_SIZE = 1;
     private static final String APPLICATION_JSON = "application/json";
     private static final String TEXT_PLAIN = "text/plain";
-    private static final int PORT = 3000;
+    private static int port = 3000;
+    public static final int UNKNOWN_COMMAND_CODE = 501;
+    public static final int NO_SUCCESS_EVENT_CODE = 500;
+
+    public RestVerticle(Integer port) {
+        if (port != null && port > 0) {
+            this.port = port;
+        }
+    }
 
     @Override
     public void start(Future<Void> startFuture) {
@@ -71,21 +77,33 @@ public class RestVerticle extends AbstractVerticle {
         apiRouter.get("/finishedrows").handler(this::handleProcessedRows);
         apiRouter.get("/waitingblocks").handler(this::handleQueueBlock);
         apiRouter.post("/turn/").handler(this::handleGameController);
+        apiRouter.get("/bricklevel").handler(this::handleBrickLevel);
+        apiRouter.get("/blockdisplacement").handler(this::handleBlockDisplacement);
 
         final HttpServerOptions options = new HttpServerOptions().setCompressionSupported(true);
 
         // create http server.
         vertx.createHttpServer(options).requestHandler(router::accept)
                 // Integer.parseInt(config().getString("port"))
-                .listen(PORT,
+                .listen(port,
                         event -> {
                             if (event.succeeded()) {
-                                log.info("Server started at port {}", PORT);
+                                log.info("Server started at port {}", port);
                                 startFuture.complete();
                             } else {
                                 startFuture.fail(event.cause());
                             }
                         });
+    }
+
+    private void handleBlockDisplacement(RoutingContext routingContext) {
+        vertx.eventBus().send(DataModelVerticle.EVENT_GET_BLOCK_DISPLACEMENT, null,
+                createResponseHandler(routingContext));
+    }
+
+    private void handleBrickLevel(RoutingContext routingContext) {
+        vertx.eventBus().send(DataModelVerticle.EVENT_GET_BRICK_LEVEL, null,
+                createResponseHandler(routingContext));
     }
 
     private void handleQueueBlock(RoutingContext routingContext) {
@@ -159,7 +177,7 @@ public class RestVerticle extends AbstractVerticle {
                 response.setCode(ErrorCode.UNKNOWN);
                 response.setMessage("UNKNOWN_COMMAND");
                 routingContext.response().putHeader("content-type", APPLICATION_JSON)
-                        .setStatusCode(501)
+                        .setStatusCode(UNKNOWN_COMMAND_CODE)
                         .end(Json.encode(response));
         }
     }
@@ -171,7 +189,7 @@ public class RestVerticle extends AbstractVerticle {
                         .end(event.result().body());
             } else {
                 routingContext.response().putHeader("content-type", TEXT_PLAIN)
-                        .setStatusCode(500)
+                        .setStatusCode(NO_SUCCESS_EVENT_CODE)
                         .end(event.cause().getMessage());
             }
         };
